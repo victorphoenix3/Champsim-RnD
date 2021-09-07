@@ -338,18 +338,64 @@ void print_prefetch_stats(uint32_t cpu, CACHE *cache)
     // cout << "@sumon" <<cache->NAME << " PREFETCH  REQUESTED: " << setw(10) << cache->pf_requested << "  ISSUED: " << setw(10) << cache->pf_issued << endl;
     // cout << "@sumon" <<cache->NAME << " TIMELY PREFETCHES: " << setw(10) << cache->pf_useful << " LATE PREFETCHES: " << cache->pf_late << " DROPPED PREFETCHES: " << cache->pf_dropped <<  endl;
 
+    uint64_t total_early = 0, total_late = 0;
+    uint64_t total_early_by_class[3] = {0};
+    uint64_t total_late_by_class[3] = {0};
+    
+    for(int i=0; i < 12; i++)
+    {
+        total_early += cache->pf_early_bin[i];
+        total_late += cache->pf_late_bin[i];
+    }
+
+    for(int i = 1; i <= 3; i++)
+    {
+        for(int j=0; j < 12; j++)
+        {
+            total_early_by_class[i-1] += cache->pf_by_class_early[i][j];
+            total_late_by_class[i-1] += cache->pf_by_class_late[i][j];
+        }   
+    }
 
 
-    cout << "@Sumon early " << cache->NAME << setw(10) << cache->pf_useful << setw(10) << cache->pf_early_bin[0] << setw(10) << cache->pf_early_bin[1] << setw(10) << cache->pf_early_bin[2] <<
+    cout << "@Sumon_Early_" << cache->NAME << setw(10) << cache->pf_early_bin[0] << setw(10) << cache->pf_early_bin[1] << setw(10) << cache->pf_early_bin[2] <<
     setw(10) << cache->pf_early_bin[3] <<setw(10) << cache->pf_early_bin[4] <<setw(10) << cache->pf_early_bin[5] <<setw(10) << cache->pf_early_bin[6] <<
     setw(10) << cache->pf_early_bin[7] <<setw(10) << cache->pf_early_bin[8] <<setw(10) << cache->pf_early_bin[9] <<setw(10) << cache->pf_early_bin[10] <<
-    setw(10) << cache->pf_early_bin[11] <<  endl;
+    setw(10) << cache->pf_early_bin[11] << setw(10) << total_early << endl;
 
-    cout << "@Sumon late " << cache->NAME << setw(10)<< cache->pf_late << setw(10) << cache->pf_late_bin[0] << setw(10) << cache->pf_late_bin[1] << setw(10) << cache->pf_late_bin[2] <<
+    cout << "@Sumon_Late_" << cache->NAME << setw(10) << cache->pf_late_bin[0] << setw(10) << cache->pf_late_bin[1] << setw(10) << cache->pf_late_bin[2] <<
     setw(10) << cache->pf_late_bin[3] <<setw(10) << cache->pf_late_bin[4] <<setw(10) << cache->pf_late_bin[5] <<setw(10) << cache->pf_late_bin[6] <<
     setw(10) << cache->pf_late_bin[7] <<setw(10) << cache->pf_late_bin[8] <<setw(10) << cache->pf_late_bin[9] <<setw(10) << cache->pf_late_bin[10] <<
-    setw(10) << cache->pf_late_bin[11] << setw(10) << endl;
+    setw(10) << cache->pf_late_bin[11] << setw(10) << total_late <<endl;
 
+    for(int i = 1; i <= 3; i++)
+    {
+        if(i == 1)
+            cout << "@Sumon_Early_stream_";
+        else if(i == 2)
+            cout <<  "@Sumon_Early_CS_";
+        else
+            cout << "@Sumon_Early_CPLX_";
+
+        cout << cache->NAME << setw(10) << cache->pf_by_class_early[i][0] << setw(10) << cache->pf_by_class_early[i][1] << setw(10) << cache->pf_by_class_early[i][2] <<
+        setw(10) << cache->pf_by_class_early[i][3] <<setw(10) << cache->pf_by_class_early[i][4] <<setw(10) << cache->pf_by_class_early[i][5] <<setw(10) << cache->pf_by_class_early[i][6] <<
+        setw(10) << cache->pf_by_class_early[i][7] <<setw(10) << cache->pf_by_class_early[i][8] <<setw(10) << cache->pf_by_class_early[i][9] <<setw(10) << cache->pf_by_class_early[i][10] <<
+        setw(10) << cache->pf_by_class_early[i][11] << setw(10) << total_early_by_class[i-1] <<endl;
+    }
+
+    for(int i = 1; i <= 3; i++)
+    {
+        if(i == 1)
+            cout << "@Sumon_Late_stream_";
+        if(i == 2)
+            cout << "@Sumon_Late_CS_";
+        if(i == 3)
+            cout << "@Sumon_Late_CPLX_";
+        cout << cache->NAME << setw(10) << cache->pf_by_class_late[i][0] << setw(10) << cache->pf_by_class_late[i][1] << setw(10) << cache->pf_by_class_late[i][2] <<
+        setw(10) << cache->pf_by_class_late[i][3] <<setw(10) << cache->pf_by_class_late[i][4] <<setw(10) << cache->pf_by_class_late[i][5] <<setw(10) << cache->pf_by_class_late[i][6] <<
+        setw(10) << cache->pf_by_class_late[i][7] <<setw(10) << cache->pf_by_class_late[i][8] <<setw(10) << cache->pf_by_class_late[i][9] <<setw(10) << cache->pf_by_class_late[i][10] <<
+        setw(10) << cache->pf_by_class_late[i][11] << setw(10) << total_late_by_class[i-1]<<endl;
+    }
 }
 
 

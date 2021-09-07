@@ -1849,7 +1849,37 @@ void CACHE::handle_read()
 					else if(cycles >= 50000 && cycles < 100000)
 						pf_early_bin[10]++;
 					else
-						pf_early_bin[11]++;			
+						pf_early_bin[11]++;
+
+					//per class
+
+					if (block[set][way].pref_class < 5)
+					{
+						if(cycles < 100)
+							pf_by_class_early[block[set][way].pref_class][0]++;
+						else if(cycles >= 100 && cycles < 250)
+							pf_by_class_early[block[set][way].pref_class][1]++;
+						else if(cycles >= 250 && cycles < 500)
+							pf_by_class_early[block[set][way].pref_class][2]++;
+						else if(cycles >= 500 && cycles < 750)
+							pf_by_class_early[block[set][way].pref_class][3]++;
+						else if(cycles >= 750 && cycles < 1000)
+							pf_by_class_early[block[set][way].pref_class][4]++;
+						else if(cycles >= 1000 && cycles < 2500)
+							pf_by_class_early[block[set][way].pref_class][5]++;
+						else if(cycles >= 2500 && cycles < 5000)
+							pf_by_class_early[block[set][way].pref_class][6]++;
+						else if(cycles >= 5000 && cycles < 10000)
+							pf_by_class_early[block[set][way].pref_class][7]++;
+						else if(cycles >= 10000 && cycles < 20000)
+							pf_by_class_early[block[set][way].pref_class][8]++;
+						else if(cycles >= 20000 && cycles < 50000)
+							pf_by_class_early[block[set][way].pref_class][9]++;
+						else if(cycles >= 50000 && cycles < 100000)
+							pf_by_class_early[block[set][way].pref_class][10]++;
+						else
+							pf_by_class_early[block[set][way].pref_class][11]++;			
+					}
 					//cout << "earlytime: " << current_core_cycle[read_cpu] - block[set][way].pf_fill_time << " count_useful: "<< pf_useful <<endl;
 
 					//Neelu: IPCP prefetch stats
@@ -3041,6 +3071,35 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 			pf_late_bin[10]++;
 		else
 			pf_late_bin[11]++;		
+
+
+		if (block[set][way].pref_class < 5)
+		{
+			if(cycles < 100)
+				pf_by_class_late[block[set][way].pref_class][0]++;
+			else if(cycles >= 100 && cycles < 250)
+				pf_by_class_late[block[set][way].pref_class][1]++;
+			else if(cycles >= 250 && cycles < 500)
+				pf_by_class_late[block[set][way].pref_class][2]++;
+			else if(cycles >= 500 && cycles < 750)
+				pf_by_class_late[block[set][way].pref_class][3]++;
+			else if(cycles >= 750 && cycles < 1000)
+				pf_by_class_late[block[set][way].pref_class][4]++;
+			else if(cycles >= 1000 && cycles < 2500)
+				pf_by_class_late[block[set][way].pref_class][5]++;
+			else if(cycles >= 2500 && cycles < 5000)
+				pf_by_class_late[block[set][way].pref_class][6]++;
+			else if(cycles >= 5000 && cycles < 10000)
+				pf_by_class_late[block[set][way].pref_class][7]++;
+			else if(cycles >= 10000 && cycles < 20000)
+				pf_by_class_late[block[set][way].pref_class][8]++;
+			else if(cycles >= 20000 && cycles < 50000)
+				pf_by_class_late[block[set][way].pref_class][9]++;
+			else if(cycles >= 50000 && cycles < 100000)
+				pf_by_class_late[block[set][way].pref_class][10]++;
+			else
+				pf_by_class_late[block[set][way].pref_class][11]++;			
+		}		
 
 	}
 

@@ -160,9 +160,11 @@ class CACHE : public MEMORY {
              pref_late[NUM_CPUS][6];
 	     //Addition by Neelu end
 
-        //@sumon, bin of early prefetches
+        //@sumon
         uint64_t pf_early_bin[15];
         uint64_t pf_late_bin[15];
+        uint64_t pf_by_class_early[6][15];
+        uint64_t pf_by_class_late[6][15];
 
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
@@ -279,6 +281,15 @@ class CACHE : public MEMORY {
     {
         pf_early_bin[i] = 0;
         pf_late_bin[i] = 0;
+    }
+
+    for(int i = 0; i < 6; i++)
+    {
+        for(int j = 0; j < 15; j++)
+        {
+            pf_by_class_early[i][j] = 0;
+            pf_by_class_late[i][j] = 0;
+        }
     }
 
 	//Addition by Neelu end
