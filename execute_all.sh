@@ -1,0 +1,10 @@
+#./executeSPEC06_IRREGULAR.sh
+#./executeSPEC.sh
+./execute_SERVER.sh
+#./sensitivity_execute_SERVER.sh
+#./execute_SPEC2017.sh
+#./execute_cloudsuite.sh
+#./execute_SPEC2006.sh
+#./executeCLOUDSUITE.sh
+#./executeCVP.sh
+#./executeSPEC06_IRREGULAR.sh

@@ -1,0 +1,29 @@
+filename=chartitle.'.txt'
+outfile=chartitle.'.png'
+outfile2=chartitle.'_perc.png'
+
+set term png
+set output outfile
+set title chartitle
+
+set style data histogram
+set style histogram rowstacked
+set style fill solid border -1
+
+set key invert reverse Left outside
+set key autotitle columnheader
+
+set xlabel "benchmarks"
+set ylabel "total # of prefetches"
+
+set xtics rotate by 45 right
+
+plot filename using 2:xtic(1), for [i=3:13] '' using i
+
+set output outfile2
+set title chartitle
+set ylabel "% of total"
+set yrange [0:100]
+
+plot filename using (100.*$2/$14):xtic(1) t column(2), \
+    for [i=3:13] '' using (100.*column(i)/column(14)) title column(i) 
