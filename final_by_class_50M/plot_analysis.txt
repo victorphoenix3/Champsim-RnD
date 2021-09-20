@@ -1,0 +1,32 @@
+filename=chartitle.'.dat'
+outfile=chartitle.'.png'
+outfile2=chartitle.'_perc.png'
+
+set term png size 900,500
+set output outfile
+set title chartitle
+
+set style data histogram
+set style histogram rowstacked
+set style fill solid border -1
+
+
+set key invert reverse Left outside title 'class' box 3
+set key autotitle columnheader
+
+
+set xlabel "benchmarks"
+set ylabel "total # of prefetches"
+
+set xtics  rotate by 55 right
+
+
+plot filename using 2:xtic(1), for [i=3:4] '' using i
+
+set output outfile2
+set title chartitle
+set ylabel "% of total"
+set yrange [0:100]
+
+plot filename using (100.*$2/$5):xtic(1) t column(2), \
+    for [i=3:4] '' using (100.*column(i)/column(5)) title column(i) 

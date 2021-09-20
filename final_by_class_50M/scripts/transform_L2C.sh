@@ -1,0 +1,23 @@
+grep @Sumon_Early_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Early Prefetches.dat"
+gnuplot -e "chartitle='L2C Early Prefetches'" plot.txt
+
+grep @Sumon_Late_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Late Prefetches.dat"
+gnuplot -e "chartitle='L2C Late Prefetches'" plot.txt
+
+grep @Sumon_Early_stream_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Early Prefetches Stream class.dat"
+gnuplot -e "chartitle='L2C Early Prefetches Stream class'" plot.txt
+
+grep @Sumon_Early_CS_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Early Prefetches CS class.dat"
+gnuplot -e "chartitle='L2C Early Prefetches CS class'" plot.txt
+
+grep @Sumon_Early_CPLX_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Early Prefetches CPLX class.dat"
+gnuplot -e "chartitle='L2C Early Prefetches CPLX class'" plot.txt
+
+grep @Sumon_Late_stream_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Late Prefetches Stream class.dat"
+gnuplot -e "chartitle='L2C Late Prefetches Stream class'" plot.txt
+
+grep @Sumon_Late_CS_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Late Prefetches CS class.dat"
+gnuplot -e "chartitle='L2C Late Prefetches CS class'" plot.txt
+
+grep @Sumon_Late_CPLX_L2C *core.txt | awk -F ":" '{print $1 " " $2}' | awk '{$2="";print $0}'| sed -e 's/.champsimtrace.xz-bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core.txt//g' | sed -e '1s/^/benchmark <100 100-250 250-500 500-750 750-1000 1000-2500 2500-5000 5000-10000 10k-20k 20k-50k 50k-100k >100k\n/' > "L2C Late Prefetches CPLX class.dat"
+gnuplot -e "chartitle='L2C Late Prefetches CPLX class'" plot.txt

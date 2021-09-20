@@ -1825,7 +1825,7 @@ void CACHE::handle_read()
 					block[set][way].prefetch = 0;
 					
 					//@sumon
-					uint64_t cycles = current_core_cycle[read_cpu] - block[set][way].pf_fill_time;
+					int cycles = current_core_cycle[read_cpu] - block[set][way].pf_fill_time;
 					if(cycles < 100)
 						pf_early_bin[0]++;
 					else if(cycles >= 100 && cycles < 250)
