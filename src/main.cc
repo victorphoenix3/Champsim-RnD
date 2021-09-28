@@ -354,7 +354,7 @@ void print_prefetch_stats(uint32_t cpu, CACHE *cache)
         }   
     }
 
-    cout<<"@sumon_overall_"<<cache->NAME<<setw(10)<<total_early<<setw(10)<<cache->pf_late<<setw(10)<<cache->pf_useless<<setw(10)<<cache->pf_fill<<setw(10)<<cache->pf_issued<<setw(10)<<cache->pf_requested<<endl;
+    cout<<"@sumon_overall_"<<cache->NAME<<setw(10)<<cache->pf_useful<<setw(10)<<cache->pf_late<<setw(10)<<cache->pf_useless<<setw(10)<<cache->pf_fill<<setw(10)<<cache->pf_issued<<setw(10)<<cache->pf_requested<<endl;
 
     cout<< "@Sumon_Early_by_class_" << cache->NAME << setw(10) << total_early_by_class[1] << setw(10) << total_early_by_class[2] << setw(10) << total_early_by_class[3] << setw(10) << total_late_by_class[4]<< endl;
     cout<< "@Sumon_Late_by_class_" << cache->NAME << setw(10) << total_late_by_class[1] << setw(10) << total_late_by_class[2]<< setw(10) << total_late_by_class[3]<< setw(10) << total_late_by_class[4]<< endl<<endl;

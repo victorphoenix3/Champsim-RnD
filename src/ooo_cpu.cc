@@ -139,8 +139,8 @@ void O3_CPU::read_from_trace()
 							                      // handle branch prediction
 
 			if (IFETCH_BUFFER.entry[ifetch_buffer_index].is_branch) {
-				DP( if (warmup_complete[cpu]) {
-						cout << "[BRANCH] instr_id: " << instr_unique_id << " ip: " << hex << arch_instr.ip << dec << " taken: " << +arch_instr.branch_taken << endl; });
+				// DP( if (warmup_complete[cpu]) {
+				// 		cout << "[BRANCH] instr_id: " << instr_unique_id << " ip: " << hex << arch_instr.ip << dec << " taken: " << +arch_instr.branch_taken << endl; });
 
 			
 				num_branch++;	
@@ -371,8 +371,8 @@ void O3_CPU::read_from_trace()
 
 			if (IFETCH_BUFFER.entry[ifetch_buffer_index].is_branch) {
 
-				DP( if (warmup_complete[cpu]) {
-				cout << "[BRANCH] instr_id: " << instr_unique_id << " ip: " << hex << arch_instr.ip << dec << " taken: " << +arch_instr.branch_taken << endl; });
+				// DP( if (warmup_complete[cpu]) {
+				// cout << "[BRANCH] instr_id: " << instr_unique_id << " ip: " << hex << arch_instr.ip << dec << " taken: " << +arch_instr.branch_taken << endl; });
 							                        num_branch++;
 			// handle branch prediction & branch predictor update
 			uint8_t branch_prediction = predict_branch(IFETCH_BUFFER.entry[ifetch_buffer_index].ip);

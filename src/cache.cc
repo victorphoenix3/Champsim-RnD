@@ -3046,6 +3046,7 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 
 	if(packet->late_pref)
 	{
+		cout << "type: " << int(packet->type) << endl;
 		int cycles = current_core_cycle[packet->cpu] - packet->demand_miss_time;
 		if(cycles < 100)
 			pf_late_bin[0]++;
@@ -3106,6 +3107,7 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 	if (block[set][way].prefetch)
 	{
 		//@Sumon
+		// cout << "type: " << int(packet->type) << endl;
 		block[set][way].pf_fill_time = current_core_cycle[packet->cpu];
 		
 		pf_fill++;

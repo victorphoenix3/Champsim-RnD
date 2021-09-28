@@ -20,7 +20,7 @@
 #include <iomanip>
 
 // USEFUL MACROS
-//#define DEBUG_PRINT
+// #define DEBUG_PRINT
 #define SANITY_CHECK
 #define LLC_BYPASS
 //#define L2_BYPASS 		//Neelu: While uncommenting, set bypass mode in cache.cc as well, otherwise it will not work. 
