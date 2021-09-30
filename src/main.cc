@@ -359,12 +359,12 @@ void print_prefetch_stats(uint32_t cpu, CACHE *cache)
     cout<< "@Sumon_Early_by_class_" << cache->NAME << setw(10) << total_early_by_class[1] << setw(10) << total_early_by_class[2] << setw(10) << total_early_by_class[3] << setw(10) << total_late_by_class[4]<< endl;
     cout<< "@Sumon_Late_by_class_" << cache->NAME << setw(10) << total_late_by_class[1] << setw(10) << total_late_by_class[2]<< setw(10) << total_late_by_class[3]<< setw(10) << total_late_by_class[4]<< endl<<endl;
 
-    cout << "@Sumon_Early_by_cycle" << cache->NAME << setw(10) << cache->pf_early_bin[0] << setw(10) << cache->pf_early_bin[1] << setw(10) << cache->pf_early_bin[2] <<
+    cout << "@Sumon_Early_by_cycle_" << cache->NAME << setw(10) << cache->pf_early_bin[0] << setw(10) << cache->pf_early_bin[1] << setw(10) << cache->pf_early_bin[2] <<
     setw(10) << cache->pf_early_bin[3] <<setw(10) << cache->pf_early_bin[4] <<setw(10) << cache->pf_early_bin[5] <<setw(10) << cache->pf_early_bin[6] <<
     setw(10) << cache->pf_early_bin[7] <<setw(10) << cache->pf_early_bin[8] <<setw(10) << cache->pf_early_bin[9] <<setw(10) << cache->pf_early_bin[10] <<
     setw(10) << cache->pf_early_bin[11] << endl;
 
-    cout << "@Sumon_Late_by_cycle" << cache->NAME << setw(10) << cache->pf_late_bin[0] << setw(10) << cache->pf_late_bin[1] << setw(10) << cache->pf_late_bin[2] <<
+    cout << "@Sumon_Late_by_cycle_" << cache->NAME << setw(10) << cache->pf_late_bin[0] << setw(10) << cache->pf_late_bin[1] << setw(10) << cache->pf_late_bin[2] <<
     setw(10) << cache->pf_late_bin[3] <<setw(10) << cache->pf_late_bin[4] <<setw(10) << cache->pf_late_bin[5] <<setw(10) << cache->pf_late_bin[6] <<
     setw(10) << cache->pf_late_bin[7] <<setw(10) << cache->pf_late_bin[8] <<setw(10) << cache->pf_late_bin[9] <<setw(10) << cache->pf_late_bin[10] <<
     setw(10) << cache->pf_late_bin[11] <<endl;
