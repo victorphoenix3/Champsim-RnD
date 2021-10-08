@@ -68,7 +68,7 @@ PREV_CIC_SETS=8
 PREV_CIC_WAYS=1
 CIC_SETS=8
 
-DRAM_IO_FREQ_DIV=2
+DRAM_IO_FREQ_DIV=32
 
 #while [ ${PIST_ENTR} -lt 129 ]
 #while [ ${CIC_SETS} -lt 65 ] 
@@ -77,7 +77,7 @@ DRAM_IO_FREQ_DIV=2
 #	CIC_WAYS=1
 
 	#while [ ${PIST_WAYS} -lt 9 -a ${PIST_WAYS} -le ${PIST_ENTR} ]
-while [ ${DRAM_IO_FREQ_DIV} -lt 13 ]
+while [ ${DRAM_IO_FREQ_DIV} -lt 33 ]
 do 
 
 	DRAM_IO_FREQ="6400/${DRAM_IO_FREQ_DIV}"
