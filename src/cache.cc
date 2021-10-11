@@ -694,8 +694,9 @@ void CACHE::handle_fill()
 			}
 			else if ((cache_type == IS_L1D) && (MSHR.entry[mshr_index].type != PREFETCH))
 			{
-				if (PROCESSED.occupancy < PROCESSED.SIZE) //Neelu: Commenting for ideal L1 prefetcher i.e. not sending to processed queue
-					PROCESSED.add_queue(&MSHR.entry[mshr_index]);
+				// if(!MSHR.entry[mshr_index].late_pref)
+					if (PROCESSED.occupancy < PROCESSED.SIZE) //Neelu: Commenting for ideal L1 prefetcher i.e. not sending to processed queue
+						PROCESSED.add_queue(&MSHR.entry[mshr_index]);
 			}
 
 			if (warmup_complete[fill_cpu])
@@ -2247,13 +2248,11 @@ void CACHE::handle_read()
 							}
 							else {
 								++pf_late; //@v Late prefetch-> on-demand requests hit in MSHR
-
-								//@Sumon
-								MSHR.entry[mshr_index].late_pref = 1;
-								MSHR.entry[mshr_index].demand_miss_time = current_core_cycle[read_cpu];
 							}
-
-							MSHR.entry[mshr_index] = RQ.entry[index];
+							
+							//@sumon: for eliminate late prefetches, do not convert to demand miss
+							if(cache_type != IS_L1D)
+								MSHR.entry[mshr_index] = RQ.entry[index];
 
 							if (prior_fill_l1i && MSHR.entry[mshr_index].fill_l1i == 0)
 								MSHR.entry[mshr_index].fill_l1i = 1;
@@ -2298,9 +2297,15 @@ void CACHE::handle_read()
 
 							if(cache_type == IS_L1D || cache_type == IS_L2C)
 							{
-								//@sumon
+								//@sumon: storing time of demand miss
 								MSHR.entry[mshr_index].late_pref = 1;
 								MSHR.entry[mshr_index].demand_miss_time = current_core_cycle[read_cpu];
+								
+								//@sumon: eliminate late prefetches
+								if ((cache_type == IS_L1D) && (RQ.entry[index].type != PREFETCH)) {
+                    				if (PROCESSED.occupancy < PROCESSED.SIZE)
+		                        		PROCESSED.add_queue(&RQ.entry[index]);
+	                			}
 							}
 
 							//Neelu: set the late bit

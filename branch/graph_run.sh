@@ -1,0 +1,13 @@
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph BC_74350M.champsim.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph BellmanFord_94B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph bf_94B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph BFS_61B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph canneal_44B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph cassandra_phase0_core0.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph classification_phase0_core2.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph Components_70B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph MIS_85B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph pr_1B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph Radii_100B.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph sssp-5.trace.gz stats/low_bw_analysis/graph/normal &
+./run_champsim.sh bimodal-no-ipcp_isca2020-ipcp_isca2020-no-no-no-no-lru-lru-lru-lru-lru-lru-lru-lru-1core 10 50 traces/graph tc_70B.trace.gz stats/low_bw_analysis/graph/normal &

@@ -1,0 +1,1 @@
+grep Finished *core.txt | sed -e 's/.champsimtrace.xz[^ ]*//g' |  awk '{print $1","$10}' | sed -e '1s/^/benchmarks,IPC\n/'
