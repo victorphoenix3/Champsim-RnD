@@ -2251,7 +2251,7 @@ void CACHE::handle_read()
 							}
 							
 							//@sumon: for eliminate late prefetches, do not convert to demand miss
-							if(cache_type != IS_L1D)
+							// if(cache_type != IS_L1D)
 								MSHR.entry[mshr_index] = RQ.entry[index];
 
 							if (prior_fill_l1i && MSHR.entry[mshr_index].fill_l1i == 0)
@@ -2302,10 +2302,10 @@ void CACHE::handle_read()
 								MSHR.entry[mshr_index].demand_miss_time = current_core_cycle[read_cpu];
 								
 								//@sumon: eliminate late prefetches
-								if ((cache_type == IS_L1D) && (RQ.entry[index].type != PREFETCH)) {
-                    				if (PROCESSED.occupancy < PROCESSED.SIZE)
-		                        		PROCESSED.add_queue(&RQ.entry[index]);
-	                			}
+								// if ((cache_type == IS_L1D) && (RQ.entry[index].type != PREFETCH)) {
+                    			// 	if (PROCESSED.occupancy < PROCESSED.SIZE)
+		                        // 		PROCESSED.add_queue(&RQ.entry[index]);
+	                			// }
 							}
 
 							//Neelu: set the late bit
