@@ -1,0 +1,320 @@
+
+*** ChampSim Multicore Out-of-Order Simulator ***
+
+Warmup Instructions: 10000000
+Simulation Instructions: 50000000
+Number of CPUs: 1
+LLC sets: 2048
+LLC ways: 16
+Off-chip DRAM Size: 4096 MB Channels: 1 Width: 64-bit Data Rate: 6400 MT/s
+CPU 0 runs traces/clientserver/server_031.champsimtrace.xz
+.xz
+CPU 0 Bimodal branch predictor
+BTB has LRU replacement policy
+ITLB has LRU replacement policy
+DTLB has LRU replacement policy
+STLB has LRU replacement policy
+L1I has LRU replacement policy
+IP Table Entries: 256
+Initialize DRRIP state for L1D
+IP_Table L2 entries: 256
+L2C has LRU replacement policy
+LLC has LRU replacement policy
+Heartbeat CPU 0 instructions: 10000000 cycles: 2889526 heartbeat IPC: 3.46078 cumulative IPC: 3.46078 (Simulation time: 0 hr 18 min 34 sec) 
+
+Warmup complete CPU 0 instructions: 10000004 cycles: 2889527 (Simulation time: 0 hr 18 min 34 sec) 
+
+Heartbeat CPU 0 instructions: 20000003 cycles: 28288059 heartbeat IPC: 0.393724 cumulative IPC: 0.393724 (Simulation time: 0 hr 36 min 29 sec) 
+Heartbeat CPU 0 instructions: 30000001 cycles: 53635022 heartbeat IPC: 0.394525 cumulative IPC: 0.394124 (Simulation time: 0 hr 54 min 14 sec) 
+Heartbeat CPU 0 instructions: 40000002 cycles: 78930355 heartbeat IPC: 0.39533 cumulative IPC: 0.394525 (Simulation time: 1 hr 12 min 4 sec) 
+Heartbeat CPU 0 instructions: 50000001 cycles: 104207571 heartbeat IPC: 0.395613 cumulative IPC: 0.394796 (Simulation time: 1 hr 29 min 48 sec) 
+Heartbeat CPU 0 instructions: 60000002 cycles: 129593537 heartbeat IPC: 0.393918 cumulative IPC: 0.39462 (Simulation time: 1 hr 44 min 17 sec) 
+Finished CPU 0 instructions: 50000002 cycles: 126704011 cumulative IPC: 0.394621 (Simulation time: 1 hr 44 min 17 sec) 
+
+ChampSim completed all CPUs
+
+Region of Interest Statistics
+
+CPU 0 cumulative IPC: 0.394621 instructions: 50000002 cycles: 126704011
+ITLB TOTAL     ACCESS:    8596159  HIT:    8044119  MISS:     552040  HIT %:    93.5781  MISS %:    6.42194   MPKI: 11.0408
+ITLB LOAD TRANSLATION ACCESS:    8596159  HIT:    8044119  MISS:     552040  HIT %:    93.5781  MISS %:    6.42194   MPKI: 11.0408
+ITLB PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+ITLB USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+ITLB TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+ITLB PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+ITLB AVERAGE MISS LATENCY: 9.16548 cycles
+ITLB RQ	ACCESS:   10315586	FORWARD:          0	MERGED:    1580335	TO_CACHE:    8735251
+
+DTLB TOTAL     ACCESS:   12558716  HIT:   11998093  MISS:     560623  HIT %:     95.536  MISS %:    4.46402   MPKI: 11.2125
+DTLB LOAD TRANSLATION ACCESS:   12558716  HIT:   11998093  MISS:     560623  HIT %:     95.536  MISS %:    4.46402   MPKI: 11.2125
+DTLB PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+DTLB USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+DTLB TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+DTLB PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+DTLB AVERAGE MISS LATENCY: 11.5033 cycles
+DTLB RQ	ACCESS:   15694166	FORWARD:          0	MERGED:    3116845	TO_CACHE:   12577321
+
+STLB TOTAL     ACCESS:    1491751  HIT:    1477760  MISS:      13991  HIT %:    99.0621  MISS %:   0.937891   MPKI: 0.27982
+STLB LOAD TRANSLATION ACCESS:    1112663  HIT:    1098672  MISS:      13991  HIT %:    98.7426  MISS %:    1.25743   MPKI: 0.27982
+STLB TRANSLATION FROM L1D PREFETCHER ACCESS:     379088  HIT:     379088  MISS:          0  HIT %:        100  MISS %:          0   MPKI: 0
+STLB PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+STLB USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+STLB TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+STLB PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+STLB AVERAGE MISS LATENCY: 105.893 cycles
+STLB RQ	ACCESS:    1595585	FORWARD:          0	MERGED:     103834	TO_CACHE:    1491751
+
+STLB Hit, L1D data hit: 0
+STLB Hit, L2C data hit: 0
+STLB Hit, LLC data hit: 0
+STLB Hit, LLC data miss: 0
+STLB STLB hints to L2: 0
+L1D TOTAL     ACCESS:   15628053  HIT:   14201893  MISS:    1426160  HIT %:    90.8744  MISS %:    9.12564   MPKI: 28.5232
+L1D LOAD      ACCESS:    8711361  HIT:    7794189  MISS:     917172  HIT %:    89.4715  MISS %:    10.5285   MPKI: 18.3434
+L1D RFO       ACCESS:    6500464  HIT:    6199009  MISS:     301455  HIT %:    95.3626  MISS %:    4.63744   MPKI: 6.0291
+L1D PREFETCH  ACCESS:     416228  HIT:     208695  MISS:     207533  HIT %:    50.1396  MISS %:    49.8604   MPKI: 4.15066
+L1D PREFETCH  REQUESTED:     966134  ISSUED:     966132  USEFUL:      60056  USELESS:     147474
+L1D USEFUL LOAD PREFETCHES:      60056 PREFETCH ISSUED TO LOWER LEVEL:     255721  ACCURACY: 23.485
+L1D TIMELY PREFETCHES:      60056 LATE PREFETCHES: 48090 DROPPED PREFETCHES: 0
+L1D PREFETCHES SAME FILL-ORIGIN LEVEL: 255721 DIFFERENT FILL-ORIGIN LEVEL: 0
+L1D AVERAGE MISS LATENCY: 2.16426e+06 cycles
+L1D RQ	ACCESS:   11879300	FORWARD:          0	MERGED:    3007171	TO_CACHE:    8750747
+L1D WQ	ACCESS:    6988846	FORWARD:     121670	MERGED:      45427	TO_CACHE:    6943419
+L1D PQ	ACCESS:     483210	FORWARD:          0	MERGED:          0	TO_CACHE:     482922
+
+L1D UNIQUE REGIONS ACCESSED: 0
+L1D REGIONS CONFLICTS: 0
+L1D Cross Page Prefetch Requests: 0
+L1D Same Page Prefetch Requests: 573497
+L1D ROI Sum of L1D PQ occupancy: 6235383
+L1D PREFETCHES PUSHED FROM L2C: 0
+L1I TOTAL     ACCESS:    9781615  HIT:    6774340  MISS:    3007275  HIT %:    69.2558  MISS %:    30.7442   MPKI: 60.1455
+L1I LOAD      ACCESS:    9781615  HIT:    6774340  MISS:    3007275  HIT %:    69.2558  MISS %:    30.7442   MPKI: 60.1455
+L1I PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+L1I USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+L1I TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+L1I PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+L1I AVERAGE MISS LATENCY: 17.628 cycles
+L1I RQ	ACCESS:   14054038	FORWARD:          0	MERGED:    3738452	TO_CACHE:   10315586
+
+BTB TOTAL     ACCESS:    6102276  HIT:    4206282  MISS:    1895994  HIT %:    68.9297  MISS %:    31.0703   MPKI: 37.9199
+BTB BRANCH_DIRECT_JUMP	ACCESS:     546758  HIT:     394739  MISS:     152019
+BTB BRANCH_INDIRECT	ACCESS:     172660  HIT:     135870  MISS:      36790
+BTB BRANCH_CONDITIONAL	ACCESS:    2968197  HIT:    2446713  MISS:     521484
+BTB BRANCH_DIRECT_CALL	ACCESS:    1018538  HIT:     647411  MISS:     371127
+BTB BRANCH_INDIRECT_CALL	ACCESS:     188789  HIT:     117745  MISS:      71044
+BTB BRANCH_RETURN	ACCESS:    1207334  HIT:     463804  MISS:     743530
+BTB BRANCH_OTHER ACCESS:          0  HIT:          0  MISS:          0
+
+L2C TOTAL     ACCESS:    5723804  HIT:    5047085  MISS:     676719  HIT %:    88.1771  MISS %:    11.8229   MPKI: 13.5344
+L2C LOAD      ACCESS:    3876065  HIT:    3407533  MISS:     468532  HIT %:    87.9122  MISS %:    12.0878   MPKI: 9.37064
+L2C DATA LOAD MPKI: 2.38966
+L2C INSTRUCTION LOAD MPKI: 6.98098
+L2C RFO       ACCESS:     301343  HIT:     251810  MISS:      49533  HIT %:    83.5626  MISS %:    16.4374   MPKI: 0.99066
+L2C PREFETCH  ACCESS:     969218  HIT:     833898  MISS:     135320  HIT %:    86.0382  MISS %:    13.9618   MPKI: 2.7064
+L2C DATA PREFETCH MPKI: 2.7064
+L2C INSTRUCTION PREFETCH MPKI: 0
+L2C WRITEBACK ACCESS:     555969  HIT:     544957  MISS:      11012  HIT %:    98.0193  MISS %:    1.98069   MPKI: 0.22024
+L2C LOAD TRANSLATION ACCESS:      21209  HIT:       8887  MISS:      12322  HIT %:     41.902  MISS %:     58.098   MPKI: 0.24644
+L2C PREFETCH  REQUESTED:     730584  ISSUED:     730584  USEFUL:      17163  USELESS:     118498
+L2C USEFUL LOAD PREFETCHES:      17163 PREFETCH ISSUED TO LOWER LEVEL:     138893  ACCURACY: 12.357
+L2C TIMELY PREFETCHES:      17163 LATE PREFETCHES: 3573 DROPPED PREFETCHES: 0
+L2C PREFETCHES SAME FILL-ORIGIN LEVEL: 74287 DIFFERENT FILL-ORIGIN LEVEL: 0
+L2C AVERAGE MISS LATENCY: 41.7308 cycles
+L2C RQ	ACCESS:    4198923	FORWARD:          0	MERGED:          0	TO_CACHE:    4198617
+L2C WQ	ACCESS:     555969	FORWARD:        311	MERGED:          0	TO_CACHE:     555969
+L2C PQ	ACCESS:     986305	FORWARD:          0	MERGED:       6878	TO_CACHE:     979422
+
+L2C Instructions Evicting Data 129336
+L2C Translations Evicting Data 8399
+L2C Data Evicting Data 173849
+L2C Instructions Evicting Instructions 216430
+L2C Translations Evicting Instructions 3156
+L2C Data Evicting Instructions 122308
+L2C Instructions Evicting Translations 3283
+L2C Translations Evicting Translations 767
+L2C Data Evicting Translations 8179
+L2C Dense regions hint from L2: 0
+PSCL5 TOTAL     ACCESS:      13991  HIT:      13991  MISS:          0  HIT %:        100  MISS %:          0   MPKI: 0
+PSCL5 LOAD TRANSLATION ACCESS:      13991  HIT:      13991  MISS:          0  HIT %:        100  MISS %:          0   MPKI: 0
+PSCL5 PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+PSCL5 USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+PSCL5 TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+PSCL5 PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+
+PSCL4 TOTAL     ACCESS:      13327  HIT:      13158  MISS:        169  HIT %:    98.7319  MISS %:     1.2681   MPKI: 0.00338
+PSCL4 LOAD TRANSLATION ACCESS:      13327  HIT:      13158  MISS:        169  HIT %:    98.7319  MISS %:     1.2681   MPKI: 0.00338
+PSCL4 PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+PSCL4 USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+PSCL4 TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+PSCL4 PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+
+PSCL3 TOTAL     ACCESS:      13958  HIT:      13789  MISS:        169  HIT %:    98.7892  MISS %:    1.21078   MPKI: 0.00338
+PSCL3 LOAD TRANSLATION ACCESS:      13958  HIT:      13789  MISS:        169  HIT %:    98.7892  MISS %:    1.21078   MPKI: 0.00338
+PSCL3 PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+PSCL3 USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+PSCL3 TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+PSCL3 PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+
+PSCL2 TOTAL     ACCESS:      13991  HIT:       7105  MISS:       6886  HIT %:    50.7826  MISS %:    49.2174   MPKI: 0.13772
+PSCL2 LOAD TRANSLATION ACCESS:      13991  HIT:       7105  MISS:       6886  HIT %:    50.7826  MISS %:    49.2174   MPKI: 0.13772
+PSCL2 PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:          0  USELESS:          0
+PSCL2 USEFUL LOAD PREFETCHES:          0 PREFETCH ISSUED TO LOWER LEVEL:          0  ACCURACY: -nan
+PSCL2 TIMELY PREFETCHES:          0 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+PSCL2 PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+
+LLC TOTAL     ACCESS:     753352  HIT:     696937  MISS:      56415  HIT %:    92.5115  MISS %:    7.48853   MPKI: 1.1283
+LLC LOAD      ACCESS:     465032  HIT:     446636  MISS:      18396  HIT %:    96.0441  MISS %:    3.95586   MPKI: 0.36792
+LLC RFO       ACCESS:      49460  HIT:      46783  MISS:       2677  HIT %:    94.5875  MISS %:    5.41245   MPKI: 0.05354
+LLC PREFETCH  ACCESS:     138893  HIT:     106029  MISS:      32864  HIT %:    76.3386  MISS %:    23.6614   MPKI: 0.65728
+LLC WRITEBACK ACCESS:      87645  HIT:      87389  MISS:        256  HIT %:    99.7079  MISS %:   0.292087   MPKI: 0.00512
+LLC LOAD TRANSLATION ACCESS:      12322  HIT:      10100  MISS:       2222  HIT %:    81.9672  MISS %:    18.0328   MPKI: 0.04444
+LLC PREFETCH  REQUESTED:          0  ISSUED:          0  USEFUL:       1514  USELESS:      26938
+LLC USEFUL LOAD PREFETCHES:       1514 PREFETCH ISSUED TO LOWER LEVEL:      32864  ACCURACY: 4.60686
+LLC TIMELY PREFETCHES:       1514 LATE PREFETCHES: 0 DROPPED PREFETCHES: 0
+LLC PREFETCHES SAME FILL-ORIGIN LEVEL: 0 DIFFERENT FILL-ORIGIN LEVEL: 0
+LLC AVERAGE MISS LATENCY: 146.177 cycles
+LLC RQ	ACCESS:     526814	FORWARD:          0	MERGED:          0	TO_CACHE:     526814
+LLC WQ	ACCESS:      87645	FORWARD:          0	MERGED:          0	TO_CACHE:      87645
+LLC PQ	ACCESS:     138893	FORWARD:          0	MERGED:          0	TO_CACHE:     138893
+
+LLC Dense regions hint to LLC: 0
+
+RAW hits: 577684
+Loads Generated: 12456984
+Loads sent to L1D: 11879300
+Stores Generated: 6988845
+Stores sent to L1D: 6988846
+Major fault: 0 Minor fault: 5588
+Allocated PAGES: 5588
+
+stream: 
+stream:times selected: 849717
+stream:pref_filled: 141282
+stream:pref_useful: 20683
+stream:pref_late: 41173
+stream:misses: 11937
+stream:misses_by_poll: 0
+
+CS: 
+CS:times selected: 102662
+CS:pref_filled: 65330
+CS:pref_useful: 46101
+CS:pref_late: 2583
+CS:misses: 6695
+CS:misses_by_poll: 1
+
+CPLX: 
+CPLX:times selected: 744643
+CPLX:pref_filled: 38574
+CPLX:pref_useful: 5226
+CPLX:pref_late: 2766
+CPLX:misses: 136593
+CPLX:misses_by_poll: 17
+
+NL_L1: 
+NL:times selected: 2553
+NL:pref_filled: 954
+NL:pref_useful: 64
+NL:pref_late: 23
+NL:misses: 248
+NL:misses_by_poll: 0
+
+total selections: 1699575
+total_filled: 207533
+total_useful: 60056
+total_late: 50021
+total_polluted: 18
+total_misses_after_warmup: 956557
+conflicts: 3381488
+Degree Incremented Times: 0
+Degree Decremented Times: 144666
+
+L1 IP Table Write Accesses: 5088477
+L1 IP Table Read Accesses: 1706989
+L1 RST Write Accesses: 717773
+L1 RST Read Accesses: 1435546
+L1 CSPT Write Accesses: 717773
+L1 CSPT Read Accesses: 1345498
+L1 RR Filter Tag Write Accesses: 483212
+L1 RR Filter Tag Read Accesses: 34400322
+L1 IP Table Tag Write Accesses: 8750746
+L1 IP Table Tag Read Accesses: 8750746
+L1 RST Tag Write Accesses: 0
+L1 RST Tag Read Accesses: 7015992
+L1 RR Filter Write Accesses: 0
+L1 RR Filter Read Accesses: 1233494
+test: 176873
+L2 IP Table Read Accesses: 1498351
+L2 IP Table Write Accesses: 2002003
+L2 IP Table Tag Read Accesses: 1118202
+L2 IP Table Tag Write Accesses: 1118202
+
+DRAM Statistics
+ CHANNEL 0
+ RQ ROW_BUFFER_HIT:      16598  ROW_BUFFER_MISS:      39561
+ DBUS_CONGESTED:          6
+ WQ ROW_BUFFER_HIT:        420  ROW_BUFFER_MISS:       1214  FULL:          0
+
+ AVG_CONGESTED_CYCLE: 5
+ All warmup complete: 2
+Channel 0 Bank busy for read cycles: 0
+Channel 0 Bank busy for write cycles: 0
+Channel 0
+Rank 0
+0banks busy for read cycles: 122897601
+0banks busy for write cycles: 1162
+1banks busy for read cycles: 1530611
+1banks busy for write cycles: 221485
+2banks busy for read cycles: 1214790
+2banks busy for write cycles: 42359
+3banks busy for read cycles: 476452
+3banks busy for write cycles: 12595
+4banks busy for read cycles: 189772
+4banks busy for write cycles: 4774
+5banks busy for read cycles: 71063
+5banks busy for write cycles: 1332
+6banks busy for read cycles: 18928
+6banks busy for write cycles: 248
+7banks busy for read cycles: 7213
+7banks busy for write cycles: 1043
+8banks busy for read cycles: 12015
+8banks busy for write cycles: 569
+
+CPU 0 Branch Prediction Accuracy: 91.8928% MPKI: 15.1591 Average ROB Occupancy at Mispredict: 19.2964
+Branch types
+NOT_BRANCH: 40650640 81.3013%
+BRANCH_DIRECT_JUMP: 546758 1.09352%
+BRANCH_INDIRECT: 172660 0.34532%
+BRANCH_CONDITIONAL: 6215044 12.4301%
+BRANCH_DIRECT_CALL: 1018538 2.03708%
+BRANCH_INDIRECT_CALL: 188789 0.377578%
+BRANCH_RETURN: 1207334 2.41467%
+BRANCH_OTHER: 0 0%
+
+@sumon_overall_L1D     60056     48090    147474    207533    966132    966134
+@Sumon_Early_by_class_L1D     15463     39662      3423        13
+@Sumon_Late_by_class_L1D     40112      2288      2360        13
+
+@Sumon_Early_by_cycle_L1D     46134      4102      2534      1818       142      1688       783      1132      1045       424       202        52
+@Sumon_Late_by_cycle_L1D     46468      1597        25         0         0         0         0         0         0         0         0         0
+@Sumon_Early_stream_L1D      6452      1739      1820      1360       112      1158       685      1001       530       381       184        41
+@Sumon_Early_CS_L1D     36880      1831       404       336         5       185        14         0         4         3         0         0
+@Sumon_Early_CPLX_L1D      2385       190       282       110        15       108        81       126        59        38        18        11
+@Sumon_Late_stream_L1D     38846      1242        24         0         0         0         0         0         0         0         0         0
+@Sumon_Late_CS_L1D      2073       215         0         0         0         0         0         0         0         0         0         0
+@Sumon_Late_CPLX_L1D      2287        73         0         0         0         0         0         0         0         0         0         0
+@sumon_overall_L2C     17163      3573    118498    135320    730584    730584
+@Sumon_Early_by_class_L2C       979        83       254         0
+@Sumon_Late_by_class_L2C         0         0         0         0
+
+@Sumon_Early_by_cycle_L2C      5042      1719       836       241      1131      2357       825      1023       980       555       407      2047
+@Sumon_Late_by_cycle_L2C      2869       702         2         0         0         0         0         0         0         0         0         0
+@Sumon_Early_stream_L2C        14        40        37         3         3         0         2        20        19        13        21       807
+@Sumon_Early_CS_L2C         1        20         0         0         0         0         0         0         2         0         1        59
+@Sumon_Early_CPLX_L2C         2        17        14         4         1         1        18         1         7         1        26       162
+@Sumon_Late_stream_L2C         0         0         0         0         0         0         0         0         0         0         0         0
+@Sumon_Late_CS_L2C         0         0         0         0         0         0         0         0         0         0         0         0
+@Sumon_Late_CPLX_L2C         0         0         0         0         0         0         0         0         0         0         0         0
+DRAM PAGES: 1048576
+Allocated PAGES: 5588

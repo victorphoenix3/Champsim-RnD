@@ -123,6 +123,7 @@ class CACHE : public MEMORY {
              pf_useless,
              pf_fill,
              pf_late,	// Number of On-demand translation requests hit in TLB MSHR with packet.type = PREFETCH.
+             pf_late_test,
              pf_lower_level, // Count prefetch request that enters MSHR as new miss(not merged)-used for TLBs as many prefetches issued gets merged 
 	     pf_lower_level_test, 
 	     pf_same_fill_level,
@@ -230,6 +231,7 @@ class CACHE : public MEMORY {
         pf_useless = 0;
         pf_fill = 0;
         pf_late = 0;
+        pf_late_test = 0;
         pf_lower_level = 0;
 	pf_lower_level_test = 0;
 	pf_same_fill_level = 0;

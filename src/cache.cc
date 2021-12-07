@@ -2251,7 +2251,7 @@ void CACHE::handle_read()
 							}
 							
 							//@sumon: for eliminate late prefetches, do not convert to demand miss
-							// if(cache_type != IS_L1D)
+							if(cache_type != IS_L1D)
 								MSHR.entry[mshr_index] = RQ.entry[index];
 
 							if (prior_fill_l1i && MSHR.entry[mshr_index].fill_l1i == 0)
@@ -2302,10 +2302,12 @@ void CACHE::handle_read()
 								MSHR.entry[mshr_index].demand_miss_time = current_core_cycle[read_cpu];
 								
 								//@sumon: eliminate late prefetches
-								// if ((cache_type == IS_L1D) && (RQ.entry[index].type != PREFETCH)) {
-                    			// 	if (PROCESSED.occupancy < PROCESSED.SIZE)
-		                        // 		PROCESSED.add_queue(&RQ.entry[index]);
-	                			// }
+								if ((cache_type == IS_L1D) && (RQ.entry[index].type != PREFETCH)) {
+                    				if (PROCESSED.occupancy < PROCESSED.SIZE) {
+		                        		pf_late_test++;
+										PROCESSED.add_queue(&RQ.entry[index]);
+									}
+	                			}
 							}
 
 							//Neelu: set the late bit
@@ -3052,58 +3054,34 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 	if(packet->late_pref)
 	{
 		int cycles = current_core_cycle[packet->cpu] - packet->demand_miss_time;
-		if(cycles < 100)
+		if(cycles < 10)
 			pf_late_bin[0]++;
-		else if(cycles >= 100 && cycles < 250)
+		else if(cycles >= 10 && cycles < 25)
 			pf_late_bin[1]++;
-		else if(cycles >= 250 && cycles < 500)
+		else if(cycles >= 25 && cycles < 50)
 			pf_late_bin[2]++;
-		else if(cycles >= 500 && cycles < 750)
+		else if(cycles >= 50 && cycles < 100)
 			pf_late_bin[3]++;
-		else if(cycles >= 750 && cycles < 1000)
+		else if(cycles >= 100 && cycles < 500)
 			pf_late_bin[4]++;
-		else if(cycles >= 1000 && cycles < 2500)
-			pf_late_bin[5]++;
-		else if(cycles >= 2500 && cycles < 5000)
-			pf_late_bin[6]++;
-		else if(cycles >= 5000 && cycles < 10000)
-			pf_late_bin[7]++;
-		else if(cycles >= 10000 && cycles < 20000)
-			pf_late_bin[8]++;
-		else if(cycles >= 20000 && cycles < 50000)
-			pf_late_bin[9]++;
-		else if(cycles >= 50000 && cycles < 100000)
-			pf_late_bin[10]++;
 		else
-			pf_late_bin[11]++;		
+			pf_late_bin[5]++;	
 
 
 		if (block[set][way].pref_class < 5)
 		{
-			if(cycles < 100)
+			if(cycles < 10)
 				pf_by_class_late[block[set][way].pref_class][0]++;
-			else if(cycles >= 100 && cycles < 250)
+			else if(cycles >= 10 && cycles < 25)
 				pf_by_class_late[block[set][way].pref_class][1]++;
-			else if(cycles >= 250 && cycles < 500)
+			else if(cycles >= 25 && cycles < 50)
 				pf_by_class_late[block[set][way].pref_class][2]++;
-			else if(cycles >= 500 && cycles < 750)
+			else if(cycles >= 50 && cycles < 100)
 				pf_by_class_late[block[set][way].pref_class][3]++;
-			else if(cycles >= 750 && cycles < 1000)
+			else if(cycles >= 100 && cycles < 500)
 				pf_by_class_late[block[set][way].pref_class][4]++;
-			else if(cycles >= 1000 && cycles < 2500)
-				pf_by_class_late[block[set][way].pref_class][5]++;
-			else if(cycles >= 2500 && cycles < 5000)
-				pf_by_class_late[block[set][way].pref_class][6]++;
-			else if(cycles >= 5000 && cycles < 10000)
-				pf_by_class_late[block[set][way].pref_class][7]++;
-			else if(cycles >= 10000 && cycles < 20000)
-				pf_by_class_late[block[set][way].pref_class][8]++;
-			else if(cycles >= 20000 && cycles < 50000)
-				pf_by_class_late[block[set][way].pref_class][9]++;
-			else if(cycles >= 50000 && cycles < 100000)
-				pf_by_class_late[block[set][way].pref_class][10]++;
 			else
-				pf_by_class_late[block[set][way].pref_class][11]++;			
+				pf_by_class_late[block[set][way].pref_class][5]++;			
 		}		
 
 	}

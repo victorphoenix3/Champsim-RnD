@@ -1,0 +1,1 @@
+grep "${2} LOAD      ACCESS" $1/*core.txt | sed -e 's/.champsimtrace.xz[^ ]*//g' |awk '{print $1","$8}' |rev | cut -d "/" -f 1 | rev| sed -e '1s/^/Benchmarks,Miss\n/'

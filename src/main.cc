@@ -354,7 +354,7 @@ void print_prefetch_stats(uint32_t cpu, CACHE *cache)
         }   
     }
 
-    cout<<"@sumon_overall_"<<cache->NAME<<setw(10)<<cache->pf_useful<<setw(10)<<cache->pf_late<<setw(10)<<cache->pf_useless<<setw(10)<<cache->pf_fill<<setw(10)<<cache->pf_issued<<setw(10)<<cache->pf_requested<<endl;
+    cout<<"@sumon_overall_"<<cache->NAME<<setw(10)<<cache->pf_useful<<setw(10)<<cache->pf_late<<setw(10)<<cache->pf_late_test<<setw(10)<<cache->pf_useless<<setw(10)<<cache->pf_fill<<setw(10)<<cache->pf_issued<<setw(10)<<cache->pf_requested<<endl;
 
     cout<< "@Sumon_Early_by_class_" << cache->NAME << setw(10) << total_early_by_class[1] << setw(10) << total_early_by_class[2] << setw(10) << total_early_by_class[3] << setw(10) << total_late_by_class[4]<< endl;
     cout<< "@Sumon_Late_by_class_" << cache->NAME << setw(10) << total_late_by_class[1] << setw(10) << total_late_by_class[2]<< setw(10) << total_late_by_class[3]<< setw(10) << total_late_by_class[4]<< endl<<endl;
@@ -365,9 +365,7 @@ void print_prefetch_stats(uint32_t cpu, CACHE *cache)
     setw(10) << cache->pf_early_bin[11] << endl;
 
     cout << "@Sumon_Late_by_cycle_" << cache->NAME << setw(10) << cache->pf_late_bin[0] << setw(10) << cache->pf_late_bin[1] << setw(10) << cache->pf_late_bin[2] <<
-    setw(10) << cache->pf_late_bin[3] <<setw(10) << cache->pf_late_bin[4] <<setw(10) << cache->pf_late_bin[5] <<setw(10) << cache->pf_late_bin[6] <<
-    setw(10) << cache->pf_late_bin[7] <<setw(10) << cache->pf_late_bin[8] <<setw(10) << cache->pf_late_bin[9] <<setw(10) << cache->pf_late_bin[10] <<
-    setw(10) << cache->pf_late_bin[11] <<endl;
+    setw(10) << cache->pf_late_bin[3] <<setw(10) << cache->pf_late_bin[4] <<setw(10) << cache->pf_late_bin[5] <<endl;
 
     for(int i = 1; i <= 3; i++)
     {
@@ -393,9 +391,7 @@ void print_prefetch_stats(uint32_t cpu, CACHE *cache)
         if(i == 3)
             cout << "@Sumon_Late_CPLX_";
         cout << cache->NAME << setw(10) << cache->pf_by_class_late[i][0] << setw(10) << cache->pf_by_class_late[i][1] << setw(10) << cache->pf_by_class_late[i][2] <<
-        setw(10) << cache->pf_by_class_late[i][3] <<setw(10) << cache->pf_by_class_late[i][4] <<setw(10) << cache->pf_by_class_late[i][5] <<setw(10) << cache->pf_by_class_late[i][6] <<
-        setw(10) << cache->pf_by_class_late[i][7] <<setw(10) << cache->pf_by_class_late[i][8] <<setw(10) << cache->pf_by_class_late[i][9] <<setw(10) << cache->pf_by_class_late[i][10] <<
-        setw(10) << cache->pf_by_class_late[i][11] <<endl;
+        setw(10) << cache->pf_by_class_late[i][3] <<setw(10) << cache->pf_by_class_late[i][4] <<setw(10) << cache->pf_by_class_late[i][5] <<endl;
     }
 
 }
@@ -510,6 +506,7 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
     cache->pf_useless = 0;
     cache->pf_fill = 0;
     cache->pf_late = 0;
+    cache->pf_late_test = 0;
     cache->pf_lower_level = 0;
     cache->pf_lower_level_test = 0;
     cache->pf_same_fill_level = 0;
