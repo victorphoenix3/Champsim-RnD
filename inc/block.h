@@ -12,6 +12,8 @@ class BLOCK {
             prefetch,
             dirty,
             used,
+            dead,
+        inaccurate_prefetch,
 	    instruction,
 	    translation;
 
@@ -38,6 +40,8 @@ class BLOCK {
         prefetch = 0;
         dirty = 0;
         used = 0;
+        dead = 0;
+    inaccurate_prefetch = 0;
 	instruction = 0;
 	translation = 0;
 
@@ -75,7 +79,9 @@ class PACKET {
     uint8_t instruction,
 	    is_data,
 	    fill_l1i,
-	    fill_l1d, 
+	    fill_l1d,
+        dead,
+        inaccurate_prefetch,
             tlb_access,
             scheduled,
             translated,
@@ -152,6 +158,8 @@ class PACKET {
 	is_data = 1;
         fill_l1i = 0;
         fill_l1d = 0;
+        dead = 0;
+        inaccurate_prefetch = 0;
 
         tlb_access = 0;
         scheduled = 0;

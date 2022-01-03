@@ -380,6 +380,25 @@ void CACHE::handle_fill()
 				assert(0); //What else could there be? No other case, right?
 		}
 
+		// quantifying cache-prefetcher interactions
+		if (MSHR.entry[mshr_index].type != PREFETCH && block[set][way].prefetch) {
+			if (MSHR.entry[mshr_index].dead) {
+				if (block[set][way].inaccurate_prefetch) deadC_evicts_inaccP++;
+				else deadC_evicts_P++;
+			} else {
+				if (block[set][way].inaccurate_prefetch) C_evicts_inaccP++;
+				else C_evicts_P++;
+			}
+		} else if (MSHR.entry[mshr_index].type == PREFETCH && !block[set][way].prefetch) {
+			if (MSHR.entry[mshr_index].inaccurate_prefetch) {
+				if (block[set][way].dead) inaccP_evicts_deadC++;
+				else inaccP_evicts_C++;
+			} else {
+				if (block[set][way].dead) P_evicts_deadC++;
+				else P_evicts_C++;
+			}
+		}
+
 		// is this dirty?
 		if (block[set][way].dirty)
 		{

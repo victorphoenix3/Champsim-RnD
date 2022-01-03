@@ -116,6 +116,16 @@ class CACHE : public MEMORY {
     uint32_t reads_available_this_cycle;
     uint8_t cache_type;
 
+    // cache-prefetcher interaction stats
+    uint64_t deadC_evicts_inaccP,
+             deadC_evicts_P,
+             C_evicts_inaccP,
+             C_evicts_P,
+             inaccP_evicts_deadC,
+             inaccP_evicts_C,
+             P_evicts_deadC,
+             P_evicts_C;
+
     // prefetch stats
     uint64_t pf_requested,
              pf_issued,
@@ -223,6 +233,15 @@ class CACHE : public MEMORY {
         fill_level = -1;
         MAX_READ = 1;
         MAX_FILL = 1;
+
+        deadC_evicts_inaccP = 0;
+        deadC_evicts_P = 0;
+        C_evicts_inaccP = 0;
+        C_evicts_P = 0;
+        inaccP_evicts_deadC = 0;
+        inaccP_evicts_C = 0;
+        P_evicts_deadC = 0;
+        P_evicts_C = 0;
 
         pf_requested = 0;
         pf_issued = 0;

@@ -333,6 +333,18 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 
 }
 
+void print_interaction_stats(uint32_t cpu, CACHE *cache)
+{
+    cout << cache->NAME << " Dead demand block evicting inaccurate prefetch block " << cache->deadC_evicts_inaccP << endl;
+    cout << cache->NAME << " Dead demand block evicting accurate prefetch block " << cache->deadC_evicts_P << endl;
+    cout << cache->NAME << " Non-Dead demand block evicting inaccurate prefetch block " << cache->C_evicts_inaccP << endl;
+    cout << cache->NAME << " Non-Dead demand block evicting accurate prefetch block " << cache->C_evicts_P << endl;
+    cout << cache->NAME << " Inaccurate prefetch block evicting dead demand block " << cache->inaccP_evicts_deadC << endl;
+    cout << cache->NAME << " Inaccurate prefetch block evicting non-dead demand block " << cache->inaccP_evicts_C << endl;
+    cout << cache->NAME << " Accurate prefetch block evicting dead demand block " << cache->P_evicts_deadC << endl;
+    cout << cache->NAME << " Accurate prefetch block evicting non-dead demand block " << cache->P_evicts_C << endl;
+}
+
 void print_prefetch_stats(uint32_t cpu, CACHE *cache)
 {
 
@@ -1865,10 +1877,13 @@ int main(int argc, char** argv)
         print_roi_stats(i, &ooo_cpu[i].STLB);
         print_roi_stats(i, &ooo_cpu[i].L1D);
         print_roi_stats(i, &ooo_cpu[i].L1I);
+        print_interaction_stats(i, &ooo_cpu[i].L1D);
+        print_interaction_stats(i, &ooo_cpu[i].L1I);
 #ifndef PERFECT_BTB
 		print_roi_stats(i, &ooo_cpu[i].BTB);
 #endif
         print_roi_stats(i, &ooo_cpu[i].L2C);
+        print_interaction_stats(i, &ooo_cpu[i].L2C);
 	 #ifdef PUSH_DTLB_PB
         print_roi_stats(i, &ooo_cpu[i].DTLB_PB);
         #endif
@@ -1879,6 +1894,7 @@ int main(int argc, char** argv)
 	print_roi_stats(i, &ooo_cpu[i].PTW.PSCL2);
 #endif
         print_roi_stats(i, &uncore.LLC);
+        print_interaction_stats(i, &uncore.LLC);
 
 	//@Vishal: print stats
         cout<<endl;
