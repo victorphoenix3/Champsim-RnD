@@ -333,6 +333,7 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 
 }
 
+// Jayati: cache-prefetcher interaction stats
 void print_interaction_stats(uint32_t cpu, CACHE *cache)
 {
     cout << cache->NAME << " Dead demand block evicting inaccurate prefetch block " << cache->deadC_evicts_inaccP << endl;
@@ -514,6 +515,24 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
     cache->WQ.TO_CACHE = 0;
     cache->WQ.FORWARD = 0;
     cache->WQ.FULL = 0;
+
+    // reset cache-prefetcher interaction stats
+    cache->deadC_evicts_inaccP = 0;
+    cache->deadC_evicts_P = 0;
+    cache->C_evicts_inaccP = 0;
+    cache->C_evicts_P = 0;
+    cache->inaccP_evicts_deadC = 0;
+    cache->inaccP_evicts_C = 0;
+    cache->P_evicts_deadC = 0;
+    cache->P_evicts_C = 0;
+
+    cache->pf_useful_currentInterval = 0;
+    cache->pf_useful_pastInterval = 0;
+    cache->pf_lower_level_currentInterval = 0;
+    cache->pf_lower_level_pastInterval = 0;
+    cache->eviction_count = 0;
+    cache->eviction_count_threshold = 30;
+    cache->pf_dynamicAccuracy_threshold = 30;
     
     //reset_prefetch_stats
     cache->pf_requested = 0;

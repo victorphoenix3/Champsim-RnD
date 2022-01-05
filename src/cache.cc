@@ -399,6 +399,15 @@ void CACHE::handle_fill()
 			}
 		}
 
+		// Jayati: resetting counters for dynamic prefetcher accyracy prediction when sampling interval changes
+		if (eviction_count == eviction_count_threshold) {
+			eviction_count = 0;
+			pf_useful_pastInterval = pf_useful_pastInterval/2 + pf_useful_currentInterval/2;
+			pf_useful_currentInterval = 0;
+			pf_lower_level_pastInterval = pf_lower_level_pastInterval/2 + pf_lower_level_currentInterval/2;
+			pf_lower_level_currentInterval = 0;
+		} else eviction_count++;
+
 		// is this dirty?
 		if (block[set][way].dirty)
 		{
@@ -1842,6 +1851,7 @@ void CACHE::handle_read()
 				if (block[set][way].prefetch)
 				{
 					pf_useful++;
+					pf_useful_currentInterval++;
 					block[set][way].prefetch = 0;
 					
 					//@sumon
@@ -1941,6 +1951,7 @@ void CACHE::handle_read()
 
 					if (cache_type == IS_STLB && MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)
 						pf_lower_level++;
+						pf_lower_level_currentInterval++;
 
 					if (cache_type == IS_LLC)
 					{
@@ -2702,6 +2713,7 @@ void CACHE::handle_prefetch()
 						pf_lower_fill_level++;
 
 					++pf_lower_level; //@v Increment for new prefetch miss
+					++pf_lower_level_currentInterval;
 
 					DP(if (warmup_complete[PQ.entry[index].cpu])
 					   {

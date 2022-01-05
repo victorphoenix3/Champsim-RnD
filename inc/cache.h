@@ -116,7 +116,7 @@ class CACHE : public MEMORY {
     uint32_t reads_available_this_cycle;
     uint8_t cache_type;
 
-    // cache-prefetcher interaction stats
+    // Jayati: cache-prefetcher interaction stats
     uint64_t deadC_evicts_inaccP,
              deadC_evicts_P,
              C_evicts_inaccP,
@@ -125,6 +125,15 @@ class CACHE : public MEMORY {
              inaccP_evicts_C,
              P_evicts_deadC,
              P_evicts_C;
+
+    // Jayati: dynamic prefetcher accuracy
+    uint64_t pf_useful_currentInterval,
+             pf_useful_pastInterval,
+             pf_lower_level_currentInterval,
+             pf_lower_level_pastInterval,
+             eviction_count,
+             eviction_count_threshold,
+             pf_dynamicAccuracy_threshold;
 
     // prefetch stats
     uint64_t pf_requested,
@@ -242,6 +251,14 @@ class CACHE : public MEMORY {
         inaccP_evicts_C = 0;
         P_evicts_deadC = 0;
         P_evicts_C = 0;
+
+        pf_useful_currentInterval = 0;
+        pf_useful_pastInterval = 0;
+        pf_lower_level_currentInterval = 0;
+        pf_lower_level_pastInterval = 0;
+        eviction_count = 0;
+        eviction_count_threshold = 30;
+        pf_dynamicAccuracy_threshold = 30;
 
         pf_requested = 0;
         pf_issued = 0;
