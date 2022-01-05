@@ -1798,6 +1798,10 @@ void CACHE::handle_read()
 							upper_level_icache[read_cpu]->return_data(&RQ.entry[index]);
 						else if (RQ.entry[index].is_data)
 							upper_level_dcache[read_cpu]->return_data(&RQ.entry[index]);
+
+						// dead_block_prediction for L2C
+						if(dead_block_counter != 0)
+							dead_block_counter--;
 					}
 					else
 					{
@@ -1816,6 +1820,9 @@ void CACHE::handle_read()
 							if (RQ.entry[index].data == 0)
 								assert(0);
 #endif
+						// dead_block_prediction for LLC
+						if(dead_block_counter != 0)
+							dead_block_counter--;
 					}
 				}
 
@@ -1932,7 +1939,15 @@ void CACHE::handle_read()
 						}
 						else
 						{
+							// dead_block_prediction for LLC(miss)
+							if(dead_block_counter == 7){
+								RQ.entry[index].is_dead = 1;
+								dead_count++;
+							}
 
+							if(dead_block_counter != 7)
+								dead_block_counter++;
+							
 							add_nonfifo_queue(&MSHR, &RQ.entry[index]); //@Vishal: Updated from add_mshr
 							if (lower_level)
 							{
@@ -1973,6 +1988,15 @@ void CACHE::handle_read()
                                                 PROCESSED.add_queue(&RQ.entry[index]);*/
 							}
 
+							// dead_block_prediction for L2C(miss)
+							if(dead_block_counter == 7){
+								RQ.entry[index].is_dead = 1;
+								dead_count++;
+							}
+
+							if(dead_block_counter != 7)
+								dead_block_counter++;
+							
 							// add it to mshr (read miss)
 							add_nonfifo_queue(&MSHR, &RQ.entry[index]); //@Vishal: Updated from add_mshr
 
@@ -3031,6 +3055,10 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 	block[set][way].dirty = 0;
 	block[set][way].prefetch = (packet->type == PREFETCH || packet->type == PREFETCH_TRANSLATION || packet->type == TRANSLATION_FROM_L1D) ? 1 : 0;
 	block[set][way].used = 0;
+
+	//dead block prediction
+	if(!block[set][way].prefetch)
+		block[set][way].dead = packet->is_dead;
 
 	
 	//Neelu: Setting instruction and translation fields in L2C

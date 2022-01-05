@@ -165,6 +165,8 @@ class CACHE : public MEMORY {
         uint64_t pf_late_bin[15];
         uint64_t pf_by_class_early[6][15];
         uint64_t pf_by_class_late[6][15];
+        uint16_t dead_block_counter;
+        uint64_t dead_count;
 
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
@@ -292,6 +294,8 @@ class CACHE : public MEMORY {
         }
     }
 
+    dead_block_counter = 3;
+    dead_count = 0;
 	//Addition by Neelu end
 
 	  initialize_replacement = &CACHE::base_initialize_replacement;

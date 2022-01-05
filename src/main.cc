@@ -276,6 +276,11 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 	
 	cout << endl;
 
+    //Sumon: Dead block stats
+    if(cache->cache_type ==  IS_L2C || cache->cache_type == IS_LLC)
+    {
+        cout<<cache->NAME<<"_Dead_block_count "<<cache->dead_count<<endl;
+    }
 
 
 	//Neelu: addition ideal spatial region stats
@@ -551,6 +556,8 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
         }
     }
 
+    cache->dead_block_counter = 3;
+    cache->dead_count = 0;
 
 
     cache->PQ.ACCESS = 0;
