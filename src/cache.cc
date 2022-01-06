@@ -381,7 +381,7 @@ void CACHE::handle_fill()
 		}
 
 		// quantifying cache-prefetcher interactions
-		if (MSHR.entry[mshr_index].type != PREFETCH && block[set][way].prefetch) {
+		if (MSHR.entry[mshr_index].type == LOAD && block[set][way].prefetch) {
 			if (MSHR.entry[mshr_index].dead) {
 				if (block[set][way].inaccurate_prefetch) deadC_evicts_inaccP++;
 				else deadC_evicts_P++;
@@ -3867,6 +3867,7 @@ int CACHE::prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, int 
 		//pf_packet.prefetch_id = prefetch_id;		Neelu: commented, Vasudha was using for debugging. Assigning to zero for now.
 		pf_packet.prefetch_id = 0;
 		pf_packet.type = PREFETCH;
+		pf_packet.inaccurate_prefetch = (pf_useful_pastInterval/pf_lower_level_pastInterval < pf_dynamicAccuracy_threshold) ? 1 : 0;
 		pf_packet.event_cycle = current_core_cycle[cpu];
 
 		// give a dummy 0 as the IP of a prefetch

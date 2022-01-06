@@ -1109,6 +1109,7 @@ int O3_CPU::prefetch_code_line(uint64_t pf_v_addr)
 
 		  pf_packet.ip = pf_v_addr;
 		  pf_packet.type = PREFETCH;
+          pf_packet.inaccurate_prefetch = (L1I.pf_useful_pastInterval/L1I.pf_lower_level_pastInterval < L1I.pf_dynamicAccuracy_threshold) ? 1 : 0;
 		  pf_packet.event_cycle = current_core_cycle[cpu];
 
 		  L1I.add_pq(&pf_packet);
