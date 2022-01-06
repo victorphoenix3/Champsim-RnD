@@ -165,8 +165,17 @@ class CACHE : public MEMORY {
         uint64_t pf_late_bin[15];
         uint64_t pf_by_class_early[6][15];
         uint64_t pf_by_class_late[6][15];
-        uint16_t dead_block_counter;
-        uint64_t dead_count;
+        uint16_t dead_block_counter, inacc_pf_counter;
+        uint64_t dead_count, inacc_count;
+
+        uint64_t deadC_evicts_inaccP,
+             deadC_evicts_P,
+             C_evicts_inaccP,
+             C_evicts_P,
+             inaccP_evicts_deadC,
+             inaccP_evicts_C,
+             P_evicts_deadC,
+             P_evicts_C;
 
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
@@ -296,6 +305,18 @@ class CACHE : public MEMORY {
 
     dead_block_counter = 3;
     dead_count = 0;
+
+    inacc_pf_counter = 3;
+    inacc_count = 0;
+
+    deadC_evicts_inaccP = 0;
+    deadC_evicts_P = 0;
+    C_evicts_inaccP = 0;
+    C_evicts_P = 0;
+    inaccP_evicts_deadC = 0;
+    inaccP_evicts_C = 0;
+    P_evicts_deadC = 0;
+    P_evicts_C = 0;
 	//Addition by Neelu end
 
 	  initialize_replacement = &CACHE::base_initialize_replacement;

@@ -276,11 +276,24 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 	
 	cout << endl;
 
-    //Sumon: Dead block stats
-    if(cache->cache_type ==  IS_L2C || cache->cache_type == IS_LLC)
-    {
-        cout<<cache->NAME<<"_Dead_block_count "<<cache->dead_count<<endl;
-    }
+    //Dead block stats
+    
+    cout<<cache->NAME<<"_Dead_block_count "<<cache->dead_count<<endl;
+    cout<<cache->NAME<<"_inaccurate_prefetch_count "<<cache->inacc_count<<endl;
+
+    cout<<cache->NAME<<" deadC_evicts_inaccP "<<cache->deadC_evicts_inaccP
+                    <<" deadC_evicts_P "<<cache->deadC_evicts_P
+                    <<" C_evicts_inaccP "<<cache->C_evicts_inaccP
+                    <<" C_evicts_P "<<cache->C_evicts_P
+                    <<" inaccP_evicts_deadC "<<cache->inaccP_evicts_deadC
+                    <<" inaccP_evicts_C "<<cache->inaccP_evicts_C
+                    <<" P_evicts_deadC "<<cache->P_evicts_deadC
+                    <<" P_evicts_C "<<cache->P_evicts_C<<endl;
+
+    cout<<"Interactions: positive negative neutral"<<endl;
+    cout<<cache->NAME<<"_interactions "<<cache->P_evicts_deadC + cache->C_evicts_inaccP<<" "
+                    <<cache->inaccP_evicts_C + cache->deadC_evicts_P<<" "
+                    <<cache->P_evicts_C + cache->C_evicts_P + cache->inaccP_evicts_deadC + cache->deadC_evicts_inaccP<<endl;
 
 
 	//Neelu: addition ideal spatial region stats
@@ -558,6 +571,18 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
 
     cache->dead_block_counter = 3;
     cache->dead_count = 0;
+
+    cache->inacc_pf_counter = 3;
+    cache->inacc_count = 0;
+
+    cache->deadC_evicts_inaccP = 0;
+    cache->deadC_evicts_P = 0;
+    cache->C_evicts_inaccP = 0;
+    cache->C_evicts_P = 0;
+    cache->inaccP_evicts_deadC = 0;
+    cache->inaccP_evicts_C = 0;
+    cache->P_evicts_deadC = 0;
+    cache->P_evicts_C = 0;
 
 
     cache->PQ.ACCESS = 0;
