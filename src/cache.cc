@@ -534,6 +534,39 @@ void CACHE::handle_fill()
 #ifdef PUSH_DTLB_PB
 			if ((cache_type != IS_DTLB) || (cache_type == IS_DTLB && MSHR.entry[mshr_index].type != PREFETCH_TRANSLATION))
 #endif
+			if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
+			{
+				// quantifying cache-prefetcher interactions
+				int MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
+				
+				if ( !MSHR_prefetch && block[set][way].prefetch) {
+					if (MSHR.entry[mshr_index].is_dead) {
+						if (block[set][way].inacc) deadC_evicts_inaccP++;
+						else deadC_evicts_P++;
+					} else {
+						if (block[set][way].inacc) C_evicts_inaccP++;
+						else C_evicts_P++;
+					}
+				} else if (MSHR_prefetch && !block[set][way].prefetch) {
+					if (MSHR.entry[mshr_index].is_inacc_pf) {
+						if (block[set][way].dead) inaccP_evicts_deadC++;
+						else inaccP_evicts_C++;
+					} else {
+						if (block[set][way].dead) P_evicts_deadC++;
+						else P_evicts_C++;
+					}
+				} else if (MSHR_prefetch && block[set][way].prefetch) {
+					if(MSHR.entry[mshr_index].is_inacc_pf) {
+						if(block[set][way].inacc)	inaccP_evicts_inaccP++;
+						else inaccP_evicts_P++;
+					} else {
+						if(block[set][way].inacc)	P_evicts_inaccP++;
+						else P_evicts_P++;
+					}
+
+				}
+			}
+
 				fill_cache(set, way, &MSHR.entry[mshr_index]);
 #ifdef PUSH_DTLB_PB
 			else if (cache_type == IS_DTLB && MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION)
@@ -1665,6 +1698,10 @@ void CACHE::handle_read()
 				{
 					if (PROCESSED.occupancy < PROCESSED.SIZE)
 						PROCESSED.add_queue(&RQ.entry[index]);
+					
+					// dead_block_prediction for L1D
+					if(dead_block_counter != 0)
+						dead_block_counter--;
 				}
 				/*	if(cache_type==0)	//perfect-ITLB and baseline DTLB
 		{
@@ -1798,6 +1835,10 @@ void CACHE::handle_read()
 							upper_level_icache[read_cpu]->return_data(&RQ.entry[index]);
 						else if (RQ.entry[index].is_data)
 							upper_level_dcache[read_cpu]->return_data(&RQ.entry[index]);
+
+						// dead_block_prediction for L2C
+						if(dead_block_counter != 0)
+							dead_block_counter--;
 					}
 					else
 					{
@@ -1816,6 +1857,9 @@ void CACHE::handle_read()
 							if (RQ.entry[index].data == 0)
 								assert(0);
 #endif
+						// dead_block_prediction for LLC
+						if(dead_block_counter != 0)
+							dead_block_counter--;
 					}
 				}
 
@@ -1823,6 +1867,10 @@ void CACHE::handle_read()
 				if (block[set][way].prefetch)
 				{
 					pf_useful++;
+					//dynamic prefetcher accuracy
+					if(inacc_pf_counter != 0)
+						inacc_pf_counter--;
+
 					block[set][way].prefetch = 0;
 					
 					//@sumon
@@ -1932,7 +1980,18 @@ void CACHE::handle_read()
 						}
 						else
 						{
+							// dead_block_prediction for LLC(miss)
+							if(dead_block_counter == 7){
+								RQ.entry[index].is_dead = 1;
+								dead_count++;
+							} else {
+								non_dead_count++;
+							}
 
+
+							if(dead_block_counter != 7)
+								dead_block_counter++;
+							
 							add_nonfifo_queue(&MSHR, &RQ.entry[index]); //@Vishal: Updated from add_mshr
 							if (lower_level)
 							{
@@ -1956,6 +2015,17 @@ void CACHE::handle_read()
 							new_packet.address = RQ.entry[index].full_physical_address >> LOG2_BLOCK_SIZE;
 							new_packet.full_addr = RQ.entry[index].full_physical_address;
 
+							// dead_block_prediction for L1D(miss)
+							if(dead_block_counter == 7){
+								new_packet.is_dead = 1;
+								dead_count++;
+							} else {
+								non_dead_count++;
+							}
+
+							if(dead_block_counter != 7)
+								dead_block_counter++;
+
 							add_nonfifo_queue(&MSHR, &new_packet); //@Vishal: Updated from add_mshr
 							lower_level->add_rq(&new_packet);
 						}
@@ -1973,6 +2043,17 @@ void CACHE::handle_read()
                                                 PROCESSED.add_queue(&RQ.entry[index]);*/
 							}
 
+							// dead_block_prediction for L2C(miss)
+							if(dead_block_counter == 7){
+								RQ.entry[index].is_dead = 1;
+								dead_count++;
+							} else {
+								non_dead_count++;
+							}
+
+							if(dead_block_counter != 7)
+								dead_block_counter++;
+							
 							// add it to mshr (read miss)
 							add_nonfifo_queue(&MSHR, &RQ.entry[index]); //@Vishal: Updated from add_mshr
 
@@ -2717,6 +2798,14 @@ void CACHE::handle_prefetch()
 										cpu = 0;
 									}
 								}
+								
+								//dynamic prefetcher accuracy
+								if(inacc_pf_counter == 7){
+									PQ.entry[index].is_inacc_pf = 1;
+									inacc_count++;
+								} else {
+									acc_count++;
+								}
 
 								// add it to MSHRs if this prefetch miss will be filled to this cache level
 								if (PQ.entry[index].fill_level <= fill_level)
@@ -2787,12 +2876,27 @@ void CACHE::handle_prefetch()
 									new_packet.address = PQ.entry[index].full_physical_address >> LOG2_BLOCK_SIZE;
 									new_packet.full_addr = PQ.entry[index].full_physical_address;
 
+									//dynamic prefetcher accuracy
+									if(inacc_pf_counter == 7){
+										new_packet.is_inacc_pf = 1;
+										inacc_count++;
+									} else {
+										acc_count++;
+									}
+
 									if (PQ.entry[index].fill_level <= fill_level)
 										add_nonfifo_queue(&MSHR, &new_packet); //@Vishal: Updated from add_mshr
 									lower_level->add_pq(&new_packet);
 								}
 								else
 								{
+									//dynamic prefetcher accuracy
+									if(inacc_pf_counter == 7){
+										PQ.entry[index].is_inacc_pf = 1;
+										inacc_count++;
+									} else {
+										acc_count++;
+									}
 
 									// add it to MSHRs if this prefetch miss will be filled to this cache level
 									if (PQ.entry[index].fill_level <= fill_level)
@@ -3025,14 +3129,24 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 			assert(0);
 	}
 #endif
-	if (block[set][way].prefetch && (block[set][way].used == 0))
+	if (block[set][way].prefetch && (block[set][way].used == 0)){
 		pf_useless++;
+		if(inacc_pf_counter != 7)
+			inacc_pf_counter++;
+	}
 
 	if (block[set][way].valid == 0)
 		block[set][way].valid = 1;
 	block[set][way].dirty = 0;
 	block[set][way].prefetch = (packet->type == PREFETCH || packet->type == PREFETCH_TRANSLATION || packet->type == TRANSLATION_FROM_L1D) ? 1 : 0;
 	block[set][way].used = 0;
+
+	//dead block prediction
+	if(!block[set][way].prefetch)
+		block[set][way].dead = packet->is_dead;
+
+	if(block[set][way].prefetch)
+		block[set][way].inacc = packet->is_inacc_pf;
 
 	
 	//Neelu: Setting instruction and translation fields in L2C

@@ -13,7 +13,9 @@ class BLOCK {
             dirty,
             used,
 	    instruction,
-	    translation;
+	    translation,
+        dead,
+        inacc;
 
     int delta,
         depth,
@@ -56,6 +58,9 @@ class BLOCK {
         instr_id = 0;
 
         lru = 0;
+
+        dead = 0;
+        inacc = 0;
     };
 };
 
@@ -82,6 +87,8 @@ class PACKET {
             fetched,
             prefetched,
             drc_tag_read,
+            is_dead,
+            is_inacc_pf,
 	    critical_ip_flag;	//Neelu: Adding to indicate that current packet's ip has been identified as critical.
 
     int fill_level, 
@@ -165,7 +172,9 @@ class PACKET {
 
     //@Sumon
     demand_miss_time = 0;
-
+    is_dead = 0;
+    is_inacc_pf = 0;
+    
 	pf_metadata = 0;
 
         returned = 0;
