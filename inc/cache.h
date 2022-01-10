@@ -166,7 +166,7 @@ class CACHE : public MEMORY {
         uint64_t pf_by_class_early[6][15];
         uint64_t pf_by_class_late[6][15];
         uint16_t dead_block_counter, inacc_pf_counter;
-        uint64_t dead_count, inacc_count;
+        uint64_t dead_count, inacc_count, non_dead_count, acc_count;
 
         uint64_t deadC_evicts_inaccP,
              deadC_evicts_P,
@@ -175,7 +175,11 @@ class CACHE : public MEMORY {
              inaccP_evicts_deadC,
              inaccP_evicts_C,
              P_evicts_deadC,
-             P_evicts_C;
+             P_evicts_C,
+             P_evicts_P,
+             P_evicts_inaccP,
+             inaccP_evicts_P,
+             inaccP_evicts_inaccP;
 
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
@@ -305,9 +309,11 @@ class CACHE : public MEMORY {
 
     dead_block_counter = 3;
     dead_count = 0;
+    non_dead_count = 0;
 
     inacc_pf_counter = 3;
     inacc_count = 0;
+    acc_count = 0;
 
     deadC_evicts_inaccP = 0;
     deadC_evicts_P = 0;
@@ -317,6 +323,10 @@ class CACHE : public MEMORY {
     inaccP_evicts_C = 0;
     P_evicts_deadC = 0;
     P_evicts_C = 0;
+    P_evicts_P = 0;
+    P_evicts_inaccP = 0;
+    inaccP_evicts_P = 0;
+    inaccP_evicts_inaccP = 0;
 	//Addition by Neelu end
 
 	  initialize_replacement = &CACHE::base_initialize_replacement;

@@ -538,6 +538,7 @@ void CACHE::handle_fill()
 			{
 				// quantifying cache-prefetcher interactions
 				int MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
+				
 				if ( !MSHR_prefetch && block[set][way].prefetch) {
 					if (MSHR.entry[mshr_index].is_dead) {
 						if (block[set][way].inacc) deadC_evicts_inaccP++;
@@ -554,6 +555,15 @@ void CACHE::handle_fill()
 						if (block[set][way].dead) P_evicts_deadC++;
 						else P_evicts_C++;
 					}
+				} else if (MSHR_prefetch && block[set][way].prefetch) {
+					if(MSHR.entry[mshr_index].is_inacc_pf) {
+						if(block[set][way].inacc)	inaccP_evicts_inaccP++;
+						else inaccP_evicts_P++;
+					} else {
+						if(block[set][way].inacc)	P_evicts_inaccP++;
+						else P_evicts_P++;
+					}
+
 				}
 			}
 
@@ -1974,7 +1984,10 @@ void CACHE::handle_read()
 							if(dead_block_counter == 7){
 								RQ.entry[index].is_dead = 1;
 								dead_count++;
+							} else {
+								non_dead_count++;
 							}
+
 
 							if(dead_block_counter != 7)
 								dead_block_counter++;
@@ -2006,6 +2019,8 @@ void CACHE::handle_read()
 							if(dead_block_counter == 7){
 								new_packet.is_dead = 1;
 								dead_count++;
+							} else {
+								non_dead_count++;
 							}
 
 							if(dead_block_counter != 7)
@@ -2032,6 +2047,8 @@ void CACHE::handle_read()
 							if(dead_block_counter == 7){
 								RQ.entry[index].is_dead = 1;
 								dead_count++;
+							} else {
+								non_dead_count++;
 							}
 
 							if(dead_block_counter != 7)
@@ -2782,8 +2799,10 @@ void CACHE::handle_prefetch()
 								
 								//dynamic prefetcher accuracy
 								if(inacc_pf_counter == 7){
-								PQ.entry[index].is_inacc_pf = 1;
+									PQ.entry[index].is_inacc_pf = 1;
 									inacc_count++;
+								} else {
+									acc_count++;
 								}
 
 								// add it to MSHRs if this prefetch miss will be filled to this cache level
@@ -2859,6 +2878,8 @@ void CACHE::handle_prefetch()
 									if(inacc_pf_counter == 7){
 										new_packet.is_inacc_pf = 1;
 										inacc_count++;
+									} else {
+										acc_count++;
 									}
 
 									if (PQ.entry[index].fill_level <= fill_level)
@@ -2871,6 +2892,8 @@ void CACHE::handle_prefetch()
 									if(inacc_pf_counter == 7){
 										PQ.entry[index].is_inacc_pf = 1;
 										inacc_count++;
+									} else {
+										acc_count++;
 									}
 
 									// add it to MSHRs if this prefetch miss will be filled to this cache level
