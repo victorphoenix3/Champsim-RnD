@@ -18,6 +18,7 @@
 #include <random>
 #include <string>
 #include <iomanip>
+#include <vector>
 
 // USEFUL MACROS
 // #define DEBUG_PRINT

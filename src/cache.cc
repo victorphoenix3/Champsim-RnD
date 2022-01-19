@@ -534,38 +534,45 @@ void CACHE::handle_fill()
 #ifdef PUSH_DTLB_PB
 			if ((cache_type != IS_DTLB) || (cache_type == IS_DTLB && MSHR.entry[mshr_index].type != PREFETCH_TRANSLATION))
 #endif
-			if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
-			{
-				// quantifying cache-prefetcher interactions
-				int MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
+			//@Sumon: Ineraction using predictors
+			// if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
+			// {
+			// 	// quantifying cache-prefetcher interactions
+			// 	int MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
 				
-				if ( !MSHR_prefetch && block[set][way].prefetch) {
-					if (MSHR.entry[mshr_index].is_dead) {
-						if (block[set][way].inacc) deadC_evicts_inaccP++;
-						else deadC_evicts_P++;
-					} else {
-						if (block[set][way].inacc) C_evicts_inaccP++;
-						else C_evicts_P++;
-					}
-				} else if (MSHR_prefetch && !block[set][way].prefetch) {
-					if (MSHR.entry[mshr_index].is_inacc_pf) {
-						if (block[set][way].dead) inaccP_evicts_deadC++;
-						else inaccP_evicts_C++;
-					} else {
-						if (block[set][way].dead) P_evicts_deadC++;
-						else P_evicts_C++;
-					}
-				} else if (MSHR_prefetch && block[set][way].prefetch) {
-					if(MSHR.entry[mshr_index].is_inacc_pf) {
-						if(block[set][way].inacc)	inaccP_evicts_inaccP++;
-						else inaccP_evicts_P++;
-					} else {
-						if(block[set][way].inacc)	P_evicts_inaccP++;
-						else P_evicts_P++;
-					}
+			// 	if ( !MSHR_prefetch && block[set][way].prefetch) {
+			// 		if (MSHR.entry[mshr_index].is_dead) {
+			// 			if (block[set][way].inacc) deadC_evicts_inaccP++;
+			// 			else deadC_evicts_P++;
+			// 		} else {
+			// 			if (block[set][way].inacc) C_evicts_inaccP++;
+			// 			else C_evicts_P++;
+			// 		}
+			// 	} else if (MSHR_prefetch && !block[set][way].prefetch) {
+			// 		if (MSHR.entry[mshr_index].is_inacc_pf) {
+			// 			if (block[set][way].dead) inaccP_evicts_deadC++;
+			// 			else inaccP_evicts_C++;
+			// 		} else {
+			// 			if (block[set][way].dead) P_evicts_deadC++;
+			// 			else P_evicts_C++;
+			// 		}
+			// 	} else if (MSHR_prefetch && block[set][way].prefetch) {
+			// 		if(MSHR.entry[mshr_index].is_inacc_pf) {
+			// 			if(block[set][way].inacc)	inaccP_evicts_inaccP++;
+			// 			else inaccP_evicts_P++;
+			// 		} else {
+			// 			if(block[set][way].inacc)	P_evicts_inaccP++;
+			// 			else P_evicts_P++;
+			// 		}
 
-				}
-			}
+			// 	}
+			// }
+
+			//@Sumon: Interaction, adding eviction entries to eviction table
+				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
+				if(block[set][way].valid) {
+					interaction_table.push_back({1, MSHR.entry[mshr_index].address, MSHR_prefetch, block[set][way].tag,block[set][way].prefetch == 1});
+				} 
 
 				fill_cache(set, way, &MSHR.entry[mshr_index]);
 #ifdef PUSH_DTLB_PB
@@ -1490,6 +1497,18 @@ void CACHE::handle_read()
 			// access cache
 			uint32_t set = get_set(RQ.entry[index].address);
 			int way = check_hit(&RQ.entry[index]);
+
+			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/hit
+			uint64_t line_addr;
+			if (cache_type == IS_L1I || cache_type == IS_L1D)
+			{
+				assert(RQ.entry[index].full_physical_address != 0);
+				line_addr = RQ.entry[index].full_physical_address >> LOG2_BLOCK_SIZE;
+			}
+			else
+				line_addr = RQ.entry[index].address;
+
+			interaction_table.push_back({0, line_addr, 0, 0, 0});
 
 			//Neelu: For Ideal Critical IP Prefetcher
 			/*if(cache_type == IS_L1D)

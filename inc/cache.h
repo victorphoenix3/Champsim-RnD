@@ -182,6 +182,10 @@ class CACHE : public MEMORY {
              inaccP_evicts_P,
              inaccP_evicts_inaccP;
 
+        // interaction
+        vector<interactionTableEntry> interaction_table;
+
+
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
                  RQ{NAME + "_RQ", RQ_SIZE}, // read queue

@@ -454,4 +454,14 @@ class LOAD_STORE_QUEUE {
         delete[] entry;
     };
 };
+
+// interaction
+struct interactionTableEntry {
+    bool is_interaction;
+    uint64_t line1;
+    bool type1;
+    uint64_t line2;
+    bool type2;
+};
+
 #endif
