@@ -571,7 +571,10 @@ void CACHE::handle_fill()
 			//@Sumon: Interaction, adding eviction entries to eviction table
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
 				if(block[set][way].valid) {
-					interaction_table.push_back({1, MSHR.entry[mshr_index].address, MSHR_prefetch, block[set][way].tag,block[set][way].prefetch == 1});
+					if (record.size() < epoch_size) {
+						record.push_back({1, MSHR.entry[mshr_index].address, MSHR_prefetch, block[set][way].tag,block[set][way].prefetch == 1});
+						if (record.size() == epoch_size) collect_interaction_stats();
+					}
 				} 
 
 				fill_cache(set, way, &MSHR.entry[mshr_index]);
@@ -1508,7 +1511,10 @@ void CACHE::handle_read()
 			else
 				line_addr = RQ.entry[index].address;
 
-			interaction_table.push_back({0, line_addr, 0, 0, 0});
+			if (record.size() < epoch_size) {
+				record.push_back({0, line_addr, 0, 0, 0});
+				if (record.size() == epoch_size) collect_interaction_stats();
+			}
 
 			//Neelu: For Ideal Critical IP Prefetcher
 			/*if(cache_type == IS_L1D)
@@ -4049,6 +4055,49 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int pf_fill_l
 	}
 
 	return 0;
+}
+
+//@jayati: parse table containing cache access records to quantify cache-prefetcher interactions
+void CACHE::collect_interaction_stats() {
+
+	for (uint64_t i = epoch_size; i >= 0; i--) {
+
+		if (!record[i].is_evict) {
+			if (!record[i].type1) total_demand_req[record[i].line1]++;
+			continue;
+		}
+
+		if (total_demand_req.find(record[i].line1) == total_demand_req.end()) total_demand_req[record[i].line1] = 0;
+		if (total_demand_req.find(record[i].line2) == total_demand_req.end()) total_demand_req[record[i].line2] = 0;
+
+		if (total_demand_req[record[i].line1] == total_demand_req[record[i].line2]) {
+			if (record[i].type1) {
+				if (record[i].type2) ntrl_P_evicts_P++;
+				else ntrl_P_evicts_C++;
+			} else {
+				if (record[i].type2) ntrl_C_evicts_P++;
+				else ntrl_C_evicts_C++;
+			}
+		} else if (total_demand_req[record[i].line1] > total_demand_req[record[i].line2]) {
+			if (record[i].type1) {
+				if (record[i].type2) pos_P_evicts_P++;
+				else pos_P_evicts_C++;
+			} else {
+				if (record[i].type2) pos_C_evicts_P++;
+				else pos_C_evicts_C++;
+			}
+		} else {
+			if (record[i].type1) {
+				if (record[i].type2) neg_P_evicts_P++;
+				else neg_P_evicts_C++;
+			} else {
+				if (record[i].type2) neg_C_evicts_P++;
+				else neg_C_evicts_C++;
+			}
+		}
+	}
+	record.clear();
+	total_demand_req.clear();
 }
 
 int CACHE::add_pq(PACKET *packet)
