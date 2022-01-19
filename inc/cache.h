@@ -104,6 +104,14 @@ extern uint32_t PAGE_TABLE_LATENCY, SWAP_LATENCY;
 #define LLC_MSHR_SIZE NUM_CPUS*64
 #define LLC_LATENCY 20  // 5 (L1I or L1D) + 10 + 20 = 35 cycles
 
+struct tableEntry {
+    bool is_evict;
+    uint64_t line1;
+    bool type1;
+    uint64_t line2;
+    bool type2;
+};
+
 class CACHE : public MEMORY {
   public:
     uint32_t cpu;
@@ -182,9 +190,24 @@ class CACHE : public MEMORY {
              inaccP_evicts_P,
              inaccP_evicts_inaccP;
 
-        // interaction
-        vector<interactionTableEntry> interaction_table;
+        //@jayati - for quantifying cache-prefetcher interactions
+        uint64_t epoch_size;
 
+        uint64_t pos_P_evicts_C,
+                pos_P_evicts_P,
+                pos_C_evicts_P,
+                pos_C_evicts_C,
+                neg_P_evicts_C,
+                neg_P_evicts_P,
+                neg_C_evicts_P,
+                neg_C_evicts_C,
+                ntrl_P_evicts_C,
+                ntrl_P_evicts_P,
+                ntrl_C_evicts_P,
+                ntrl_C_evicts_C;
+
+        vector<tableEntry> record;
+        map<uint64_t, uint64_t> total_demand_req;
 
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
@@ -333,6 +356,23 @@ class CACHE : public MEMORY {
     P_evicts_inaccP = 0;
     inaccP_evicts_P = 0;
     inaccP_evicts_inaccP = 0;
+
+    //@jayati
+    epoch_size = 2 * NUM_SET * NUM_WAY;
+
+    pos_P_evicts_C = 0;
+    pos_P_evicts_P = 0;
+    pos_C_evicts_P = 0;
+    pos_C_evicts_C = 0;
+    neg_P_evicts_C = 0;
+    neg_P_evicts_P = 0;
+    neg_C_evicts_P = 0;
+    neg_C_evicts_C = 0;
+    ntrl_P_evicts_C = 0;
+    ntrl_P_evicts_P = 0;
+    ntrl_C_evicts_P = 0;
+    ntrl_C_evicts_C = 0;
+
 	//Addition by Neelu end
 
 	  initialize_replacement = &CACHE::base_initialize_replacement;
@@ -452,7 +492,10 @@ class CACHE : public MEMORY {
          itlb_prefetcher_final_stats(),
          dtlb_prefetcher_final_stats(),
          stlb_prefetcher_final_stats();
-	
+
+	// cache-prefetcher interaction stats
+    void collect_interaction_stats();
+
     //Neelu: adding for l1i prefetcher
     	void (*l1i_prefetcher_cache_operate)(uint32_t, uint64_t, uint8_t, uint8_t);
 	void (*l1i_prefetcher_cache_fill)(uint32_t, uint64_t, uint32_t, uint32_t, uint8_t, uint64_t);
