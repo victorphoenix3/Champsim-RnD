@@ -277,20 +277,26 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 	cout << endl;
 
     //Dead block stats
-    
-    cout<<cache->NAME<<"_Dead_block_count "<<cache->dead_count<<" "<<cache->non_dead_count<<endl;
-    cout<<cache->NAME<<"_inaccurate_prefetch_count "<<cache->inacc_count<<" "<<cache->acc_count<<endl;
+    // cout<<cache->NAME<<"_Dead_block_count "<<cache->dead_count<<" "<<cache->non_dead_count<<endl;
+    // cout<<cache->NAME<<"_inaccurate_prefetch_count "<<cache->inacc_count<<" "<<cache->acc_count<<endl;
 
     
+    // cout<<"Interactions: positive negative neutral"<<endl;
+    // cout<<cache->NAME<<"_interactions "<<cache->P_evicts_deadC + cache->C_evicts_inaccP + cache->P_evicts_inaccP<<" "
+    //                 <<cache->inaccP_evicts_C + cache->deadC_evicts_P + cache->inaccP_evicts_P<<" "
+    //                 <<cache->P_evicts_C + cache->C_evicts_P + cache->inaccP_evicts_deadC + cache->deadC_evicts_inaccP + cache->inaccP_evicts_inaccP + cache->P_evicts_P << endl;
+
+    // cout<<cache->NAME<<"_positive "<<cache->P_evicts_deadC <<" "<< cache->C_evicts_inaccP <<" "<< cache->P_evicts_inaccP<<endl;
+    // cout<<cache->NAME<<"_negative "<<cache->inaccP_evicts_C <<" "<< cache->deadC_evicts_P <<" "<< cache->inaccP_evicts_P<<endl;
+    // cout<<cache->NAME<<"_neutral "<<cache->P_evicts_C <<" "<< cache->C_evicts_P <<" "<< cache->inaccP_evicts_deadC <<" "<< cache->deadC_evicts_inaccP <<" "<< cache->inaccP_evicts_inaccP <<" "<< cache->P_evicts_P << endl;   
+
+
+    //@Sumon: interactions, window approach
     cout<<"Interactions: positive negative neutral"<<endl;
-    cout<<cache->NAME<<"_interactions "<<cache->P_evicts_deadC + cache->C_evicts_inaccP + cache->P_evicts_inaccP<<" "
-                    <<cache->inaccP_evicts_C + cache->deadC_evicts_P + cache->inaccP_evicts_P<<" "
-                    <<cache->P_evicts_C + cache->C_evicts_P + cache->inaccP_evicts_deadC + cache->deadC_evicts_inaccP + cache->inaccP_evicts_inaccP + cache->P_evicts_P << endl;
-
-    cout<<cache->NAME<<"_positive "<<cache->P_evicts_deadC <<" "<< cache->C_evicts_inaccP <<" "<< cache->P_evicts_inaccP<<endl;
-    cout<<cache->NAME<<"_negative "<<cache->inaccP_evicts_C <<" "<< cache->deadC_evicts_P <<" "<< cache->inaccP_evicts_P<<endl;
-    cout<<cache->NAME<<"_neutral "<<cache->P_evicts_C <<" "<< cache->C_evicts_P <<" "<< cache->inaccP_evicts_deadC <<" "<< cache->deadC_evicts_inaccP <<" "<< cache->inaccP_evicts_inaccP <<" "<< cache->P_evicts_P << endl;   
-
+    cout<<cache->NAME<<"_interactions "<< cache->pos_C_evicts_P + cache->pos_P_evicts_C + cache->pos_P_evicts_P <<" "
+                                    << cache->neg_C_evicts_P + cache->neg_P_evicts_P + cache->neg_P_evicts_C <<" "
+                                    << cache->ntrl_C_evicts_P + cache->ntrl_P_evicts_C + cache->ntrl_P_evicts_P<<endl;
+    
 
 	//Neelu: addition ideal spatial region stats
 	if(cache->cache_type == IS_L1D)
@@ -583,6 +589,22 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
     cache->inaccP_evicts_P = 0;
     cache->inaccP_evicts_inaccP = 0;
 
+    //@Sumon: interaction, window approach
+    cache->neg_C_evicts_C = 0;
+    cache->neg_C_evicts_P = 0;
+    cache->neg_P_evicts_P = 0;
+    cache->neg_P_evicts_C = 0;
+    cache->ntrl_C_evicts_C = 0;
+    cache->ntrl_C_evicts_P = 0;
+    cache->ntrl_P_evicts_C = 0;
+    cache->ntrl_P_evicts_P = 0;
+    cache->pos_C_evicts_C = 0;
+    cache->pos_C_evicts_P = 0;
+    cache->pos_P_evicts_C = 0;
+    cache->pos_P_evicts_P = 0;
+
+    cache->record.clear();
+    cache->total_demand_req.clear();
 
     cache->PQ.ACCESS = 0;
     cache->PQ.MERGED = 0;

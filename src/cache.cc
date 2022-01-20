@@ -569,6 +569,8 @@ void CACHE::handle_fill()
 			// }
 
 			//@Sumon: Interaction, adding eviction entries to eviction table
+			if(cache_type == IS_L2C)
+			{
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
 				if(block[set][way].valid) {
 					if (record.size() < epoch_size) {
@@ -576,6 +578,7 @@ void CACHE::handle_fill()
 						if (record.size() == epoch_size) collect_interaction_stats();
 					}
 				} 
+			}
 
 				fill_cache(set, way, &MSHR.entry[mshr_index]);
 #ifdef PUSH_DTLB_PB
@@ -1502,18 +1505,22 @@ void CACHE::handle_read()
 			int way = check_hit(&RQ.entry[index]);
 
 			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/hit
-			uint64_t line_addr;
-			if (cache_type == IS_L1I || cache_type == IS_L1D)
+			if(cache_type == IS_L2C)
 			{
-				assert(RQ.entry[index].full_physical_address != 0);
-				line_addr = RQ.entry[index].full_physical_address >> LOG2_BLOCK_SIZE;
-			}
-			else
-				line_addr = RQ.entry[index].address;
+				uint64_t line_addr;
+				// if (cache_type == IS_L1I || cache_type == IS_L1D)
+				// {
+				// 	assert(RQ.entry[index].full_physical_address != 0);
+				// 	line_addr = RQ.entry[index].full_physical_address >> LOG2_BLOCK_SIZE;
+				// }
+				// else
+					line_addr = RQ.entry[index].address;
 
-			if (record.size() < epoch_size) {
-				record.push_back({0, line_addr, 0, 0, 0});
-				if (record.size() == epoch_size) collect_interaction_stats();
+				if (record.size() < epoch_size) {
+					record.push_back({0, line_addr, 0, 0, 0});
+					if (record.size() == epoch_size) collect_interaction_stats();
+				}
+
 			}
 
 			//Neelu: For Ideal Critical IP Prefetcher
@@ -4059,45 +4066,53 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int pf_fill_l
 
 //@jayati: parse table containing cache access records to quantify cache-prefetcher interactions
 void CACHE::collect_interaction_stats() {
-
-	for (uint64_t i = epoch_size; i >= 0; i--) {
-
+	// cout<<"\n\n"<<this->NAME<<endl;
+	// cout<<"start of interaction stat collection\n---------------------------------------------------------------------"<<endl;
+	// cout<<"type  line1  type1 line2 type2"<<endl;
+	for (int i = epoch_size - 1; i >= 0; i--) {
+		// cout << record[i].is_evict<<"  " << hex << record[i].line1<<"  "<< record[i].type1<<"  "<< hex << record[i].line2<<"  "<< record[i].type2<<dec<<endl;
+		
 		if (!record[i].is_evict) {
-			if (!record[i].type1) total_demand_req[record[i].line1]++;
+			// if (!record[i].type1) 
+				total_demand_req[record[i].line1]++;
 			continue;
 		}
 
 		if (total_demand_req.find(record[i].line1) == total_demand_req.end()) total_demand_req[record[i].line1] = 0;
 		if (total_demand_req.find(record[i].line2) == total_demand_req.end()) total_demand_req[record[i].line2] = 0;
 
+		// cout<<"hits: "<<total_demand_req[record[i].line1] << " " <<total_demand_req[record[i].line2] << endl;
+
 		if (total_demand_req[record[i].line1] == total_demand_req[record[i].line2]) {
-			if (record[i].type1) {
-				if (record[i].type2) ntrl_P_evicts_P++;
+			if (record[i].type1 == 1) {
+				if (record[i].type2 == 1) ntrl_P_evicts_P++;
 				else ntrl_P_evicts_C++;
 			} else {
-				if (record[i].type2) ntrl_C_evicts_P++;
+				if (record[i].type2 == 1) ntrl_C_evicts_P++;
 				else ntrl_C_evicts_C++;
 			}
 		} else if (total_demand_req[record[i].line1] > total_demand_req[record[i].line2]) {
-			if (record[i].type1) {
+			if (record[i].type1  == 1) {
 				if (record[i].type2) pos_P_evicts_P++;
 				else pos_P_evicts_C++;
 			} else {
-				if (record[i].type2) pos_C_evicts_P++;
+				if (record[i].type2 == 1) pos_C_evicts_P++;
 				else pos_C_evicts_C++;
 			}
 		} else {
-			if (record[i].type1) {
-				if (record[i].type2) neg_P_evicts_P++;
+			if (record[i].type1 == 1) {
+				if (record[i].type2 == 1) neg_P_evicts_P++;
 				else neg_P_evicts_C++;
 			} else {
-				if (record[i].type2) neg_C_evicts_P++;
+				if (record[i].type2 == 1) neg_C_evicts_P++;
 				else neg_C_evicts_C++;
 			}
 		}
 	}
 	record.clear();
 	total_demand_req.clear();
+
+	// cout<<"---------------------------------------------------------------------\nend"<<endl;
 }
 
 int CACHE::add_pq(PACKET *packet)

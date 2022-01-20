@@ -358,7 +358,7 @@ class CACHE : public MEMORY {
     inaccP_evicts_inaccP = 0;
 
     //@jayati
-    epoch_size = 2 * NUM_SET * NUM_WAY;
+    epoch_size = 8 * NUM_SET * NUM_WAY;
 
     pos_P_evicts_C = 0;
     pos_P_evicts_P = 0;
