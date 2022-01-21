@@ -192,6 +192,7 @@ class CACHE : public MEMORY {
 
         //@jayati - for quantifying cache-prefetcher interactions
         uint64_t epoch_size;
+        uint8_t current_table, next_table, fill_table;
 
         uint64_t pos_P_evicts_C,
                 pos_P_evicts_P,
@@ -206,7 +207,7 @@ class CACHE : public MEMORY {
                 ntrl_C_evicts_P,
                 ntrl_C_evicts_C;
 
-        vector<tableEntry> record;
+        vector<vector<tableEntry>> record;
         map<uint64_t, uint64_t> total_demand_req;
 
     // queues
@@ -359,6 +360,10 @@ class CACHE : public MEMORY {
 
     //@jayati
     epoch_size = 8 * NUM_SET * NUM_WAY;
+    current_table = 0;
+    next_table = 1;
+    fill_table = 0;
+    record.resize(2);
 
     pos_P_evicts_C = 0;
     pos_P_evicts_P = 0;
