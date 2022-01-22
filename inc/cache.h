@@ -207,8 +207,10 @@ class CACHE : public MEMORY {
                 ntrl_C_evicts_P,
                 ntrl_C_evicts_C;
 
-        vector<vector<tableEntry>> record;
+        vector<vector<tableEntry>*> record;
+        vector<tableEntry> recordA, recordB;
         map<uint64_t, uint64_t> total_demand_req;
+        uint64_t total_evictions;
 
     // queues
     PACKET_QUEUE WQ{NAME + "_WQ", WQ_SIZE}, // write queue
@@ -359,11 +361,17 @@ class CACHE : public MEMORY {
     inaccP_evicts_inaccP = 0;
 
     //@jayati
-    epoch_size = 8 * NUM_SET * NUM_WAY;
+    epoch_size = NUM_SET * NUM_WAY;
     current_table = 0;
     next_table = 1;
     fill_table = 0;
+    total_evictions = 0;
     record.resize(2);
+    recordA.resize(0);
+    recordB.resize(0);
+
+    record[0] = &recordA;
+    record[1] = &recordB;
 
     pos_P_evicts_C = 0;
     pos_P_evicts_P = 0;
