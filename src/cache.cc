@@ -583,14 +583,13 @@ void CACHE::handle_fill()
 						if (total_evictions == epoch_size/2) {
 							if (fill_table == current_table) {
 								fill_table = next_table;
-								total_evictions = 0;
 							}
 							else {
 								collect_interaction_stats();
 								fill_table = current_table;
 								swap(current_table,next_table);
-								total_evictions = 0;
 							}
+							total_evictions = 0;
 						}							
 					}
 				} 
