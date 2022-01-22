@@ -573,14 +573,16 @@ void CACHE::handle_fill()
 			{
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
 				if(block[set][way].valid) {
-					if (record[fill_table].size() < epoch_size/2) {
-						record[fill_table].push_back({1, MSHR.entry[mshr_index].address, MSHR_prefetch, block[set][way].tag,block[set][way].prefetch == 1});
-						if (record[fill_table].size() == epoch_size/2) {
+					if (total_evictions < epoch_size/2) {
+						(*record[fill_table]).push_back({1, MSHR.entry[mshr_index].address, MSHR_prefetch, block[set][way].tag,block[set][way].prefetch == 1});
+						total_evictions++;
+						if (total_evictions == epoch_size/2) {
 							if (fill_table == current_table) fill_table = next_table;
 							else {
 								collect_interaction_stats();
 								fill_table = current_table;
 								swap(current_table,next_table);
+								total_evictions = epoch_size/2;
 							}
 						}							
 					}
@@ -1523,17 +1525,7 @@ void CACHE::handle_read()
 				// else
 					line_addr = RQ.entry[index].address;
 
-				if (record[fill_table].size() < epoch_size/2) {
-					record[fill_table].push_back({0, line_addr, 0, 0, 0});
-					if (record[fill_table].size() == epoch_size/2) {
-						if (fill_table == current_table) fill_table = next_table;
-						else {
-							collect_interaction_stats();
-							fill_table = current_table;
-							swap(current_table,next_table);
-						}
-					}							
-				}
+				(*record[fill_table]).push_back({0, line_addr, 0, 0, 0});
 
 			}
 
@@ -4084,47 +4076,47 @@ void CACHE::collect_interaction_stats() {
 	// cout<<"start of interaction stat collection\n---------------------------------------------------------------------"<<endl;
 	// cout<<"type  line1  type1 line2 type2"<<endl;
 	for (uint64_t i = epoch_size/2; i >= 0; i--) {
-		if (!record[next_table][i].is_evict) 
-			total_demand_req[record[next_table][i].line1]++;	
+		if (! ((*record[next_table])[i].is_evict) ) 
+			total_demand_req[(*record[next_table])[i].line1]++;	
 	}
 
 	for (uint64_t i = epoch_size/2; i >= 0; i--) {
 
-		if (!record[current_table][i].is_evict) {
-			if (!record[current_table][i].type1) total_demand_req[record[current_table][i].line1]++;
+		if (! ((*record[current_table])[i].is_evict)) {
+			if (! ((*record[current_table])[i].type1)) total_demand_req[(*record[current_table])[i].line1]++;
 			continue;
 		}
 
-		if (total_demand_req.find(record[current_table][i].line1) == total_demand_req.end()) total_demand_req[record[current_table][i].line1] = 0;
-		if (total_demand_req.find(record[current_table][i].line2) == total_demand_req.end()) total_demand_req[record[current_table][i].line2] = 0;
+		if (total_demand_req.find((*record[current_table])[i].line1) == total_demand_req.end()) total_demand_req[(*record[current_table])[i].line1] = 0;
+		if (total_demand_req.find((*record[current_table])[i].line2) == total_demand_req.end()) total_demand_req[(*record[current_table])[i].line2] = 0;
 
-		if (total_demand_req[record[current_table][i].line1] == total_demand_req[record[current_table][i].line2]) {
-			if (record[current_table][i].type1) {
-				if (record[current_table][i].type2) ntrl_P_evicts_P++;
+		if (total_demand_req[(*record[current_table])[i].line1] == total_demand_req[(*record[current_table])[i].line2]) {
+			if ((*record[current_table])[i].type1) {
+				if ((*record[current_table])[i].type2) ntrl_P_evicts_P++;
 				else ntrl_P_evicts_C++;
 			} else {
-				if (record[current_table][i].type2) ntrl_C_evicts_P++;
+				if ((*record[current_table])[i].type2) ntrl_C_evicts_P++;
 				else ntrl_C_evicts_C++;
 			}
-		} else if (total_demand_req[record[current_table][i].line1] > total_demand_req[record[current_table][i].line2]) {
-			if (record[current_table][i].type1) {
-				if (record[current_table][i].type2) pos_P_evicts_P++;
+		} else if (total_demand_req[(*record[current_table])[i].line1] > total_demand_req[(*record[current_table])[i].line2]) {
+			if ((*record[current_table])[i].type1) {
+				if ((*record[current_table])[i].type2) pos_P_evicts_P++;
 				else pos_P_evicts_C++;
 			} else {
-				if (record[current_table][i].type2) pos_C_evicts_P++;
+				if ((*record[current_table])[i].type2) pos_C_evicts_P++;
 				else pos_C_evicts_C++;
 			}
 		} else {
-			if (record[current_table][i].type1) {
-				if (record[current_table][i].type2) neg_P_evicts_P++;
+			if ((*record[current_table])[i].type1) {
+				if ((*record[current_table])[i].type2) neg_P_evicts_P++;
 				else neg_P_evicts_C++;
 			} else {
-				if (record[current_table][i].type2) neg_C_evicts_P++;
+				if ((*record[current_table])[i].type2) neg_C_evicts_P++;
 				else neg_C_evicts_C++;
 			}
 		}
 	}
-	record[current_table].clear();
+	(*record[current_table]).clear();
 	total_demand_req.clear();
 
 	// cout<<"---------------------------------------------------------------------\nend"<<endl;
