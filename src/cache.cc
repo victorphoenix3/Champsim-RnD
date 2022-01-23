@@ -568,21 +568,28 @@ void CACHE::handle_fill()
 			// 	}
 			// }
 
+// cache_type == IS_L2C || cache_type == IS_L1D ||
 			//@Sumon: Interaction, adding eviction entries to eviction table
-			if(cache_type == IS_L2C)
+			if( cache_type == IS_LLC)
 			{
+				// cout<<"hello"<<endl;
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
 				if(block[set][way].valid) {
+						// cout<<"test: "<<total_evictions<<" "<<epoch_size/2<<" "<<fill_table<<" "<<current_table<<" "<<next_table<<endl;
 					if (total_evictions < epoch_size/2) {
 						(*record[fill_table]).push_back({1, MSHR.entry[mshr_index].address, MSHR_prefetch, block[set][way].tag,block[set][way].prefetch == 1});
 						total_evictions++;
+						// cout<<"test: "<<total_evictions<<" "<<epoch_size/2<<" "<<fill_table<<" "<<current_table<<" "<<next_table<<endl;
 						if (total_evictions == epoch_size/2) {
-							if (fill_table == current_table) fill_table = next_table;
+							if (fill_table == current_table) {
+								fill_table = next_table;
+								total_evictions = 0;
+							}
 							else {
 								collect_interaction_stats();
 								fill_table = current_table;
 								swap(current_table,next_table);
-								total_evictions = epoch_size/2;
+								total_evictions = 0;
 							}
 						}							
 					}
@@ -1513,8 +1520,9 @@ void CACHE::handle_read()
 			uint32_t set = get_set(RQ.entry[index].address);
 			int way = check_hit(&RQ.entry[index]);
 
-			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/hit
-			if(cache_type == IS_L2C)
+			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/
+			// cache_type == IS_L2C || cache_type == IS_L1D ||
+			if(cache_type == IS_LLC)
 			{
 				uint64_t line_addr;
 				// if (cache_type == IS_L1I || cache_type == IS_L1D)
@@ -4072,20 +4080,31 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int pf_fill_l
 
 //@jayati: parse table containing cache access records to quantify cache-prefetcher interactions
 void CACHE::collect_interaction_stats() {
-	// cout<<"\n\n"<<this->NAME<<endl;
+	// cout<<"epoch: "<<epoch_size/2<<endl;
+	// cout<<"next table: "<<record[next_table]->size()<<endl;
+	// cout<<"cur table: "<<record[current_table]->size()<<endl;
+
 	// cout<<"start of interaction stat collection\n---------------------------------------------------------------------"<<endl;
-	// cout<<"type  line1  type1 line2 type2"<<endl;
-	for (uint64_t i = epoch_size/2; i >= 0; i--) {
-		if (! ((*record[next_table])[i].is_evict) ) 
+	
+	// cout<<"next table"<<endl;
+	for (int i = record[next_table]->size(); i >= 0; i--) {
+		if (!((*record[next_table])[i].is_evict) ){
+			// cout << (*record[next_table])[i].is_evict<<" " << hex << (*record[next_table])[i].line1<<" "<< (*record[next_table])[i].type1<<" "<< hex << (*record[next_table])[i].line2<<" "<< (*record[next_table])[i].type2<<dec<<endl;
 			total_demand_req[(*record[next_table])[i].line1]++;	
+		} 
 	}
+	// cout<<"start table"<<endl;
+	for (int i = record[current_table]->size(); i >= 0; i--) {
 
-	for (uint64_t i = epoch_size/2; i >= 0; i--) {
 
-		if (! ((*record[current_table])[i].is_evict)) {
+		if (!((*record[current_table])[i].is_evict)) {
+			// cout << (*record[current_table])[i].is_evict<<" " << hex << (*record[current_table])[i].line1<<" "<< (*record[current_table])[i].type1<<" "<< hex << (*record[current_table])[i].line2<<" "<< (*record[current_table])[i].type2<<dec<<endl;
 			if (! ((*record[current_table])[i].type1)) total_demand_req[(*record[current_table])[i].line1]++;
 			continue;
 		}
+
+		// cout << (*record[current_table])[i].is_evict<<" " << hex << (*record[current_table])[i].line1<<" "<< (*record[current_table])[i].type1<<" "<< hex << (*record[current_table])[i].line2<<" "<< (*record[current_table])[i].type2<<dec<< " hits: " <<total_demand_req[(*record[current_table])[i].line1] << " " <<total_demand_req[(*record[current_table])[i].line2] << endl;
+
 
 		if (total_demand_req.find((*record[current_table])[i].line1) == total_demand_req.end()) total_demand_req[(*record[current_table])[i].line1] = 0;
 		if (total_demand_req.find((*record[current_table])[i].line2) == total_demand_req.end()) total_demand_req[(*record[current_table])[i].line2] = 0;
@@ -4120,6 +4139,7 @@ void CACHE::collect_interaction_stats() {
 	total_demand_req.clear();
 
 	// cout<<"---------------------------------------------------------------------\nend"<<endl;
+	cout.flush();
 }
 
 int CACHE::add_pq(PACKET *packet)

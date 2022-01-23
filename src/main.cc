@@ -292,7 +292,7 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 
 
     //@Sumon: interactions, window approach
-    cout<<"Interactions: positive negative neutral"<<endl;
+    cout<<"Revised Interactions: positive negative neutral"<<endl;
     cout<<cache->NAME<<"_interactions "<< cache->pos_C_evicts_P + cache->pos_P_evicts_C + cache->pos_P_evicts_P <<" "
                                     << cache->neg_C_evicts_P + cache->neg_P_evicts_P + cache->neg_P_evicts_C <<" "
                                     << cache->ntrl_C_evicts_P + cache->ntrl_P_evicts_C + cache->ntrl_P_evicts_P<<endl;
@@ -603,8 +603,15 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
     cache->pos_P_evicts_C = 0;
     cache->pos_P_evicts_P = 0;
 
-    cache->record.clear();
+    cache->recordA.clear();
+    cache->recordB.clear();
     cache->total_demand_req.clear();
+    cache->current_table = 0;
+    cache->next_table = 1;
+    cache->fill_table = 0;
+    cache->total_evictions = 0;
+    cache->record[0] = &(cache->recordA);
+    cache->record[1] = &(cache->recordB);
 
     cache->PQ.ACCESS = 0;
     cache->PQ.MERGED = 0;

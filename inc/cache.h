@@ -361,7 +361,7 @@ class CACHE : public MEMORY {
     inaccP_evicts_inaccP = 0;
 
     //@jayati
-    epoch_size = NUM_SET * NUM_WAY;
+    epoch_size = 0.5 * NUM_SET * NUM_WAY;
     current_table = 0;
     next_table = 1;
     fill_table = 0;
