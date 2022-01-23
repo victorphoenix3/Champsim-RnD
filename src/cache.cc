@@ -4087,14 +4087,14 @@ void CACHE::collect_interaction_stats() {
 	// cout<<"start of interaction stat collection\n---------------------------------------------------------------------"<<endl;
 	
 	// cout<<"next table"<<endl;
-	for (int i = record[next_table]->size(); i >= 0; i--) {
+	for (int i = record[next_table]->size()-1; i >= 0; i--) {
 		if (!((*record[next_table])[i].is_evict) ){
 			// cout << (*record[next_table])[i].is_evict<<" " << hex << (*record[next_table])[i].line1<<" "<< (*record[next_table])[i].type1<<" "<< hex << (*record[next_table])[i].line2<<" "<< (*record[next_table])[i].type2<<dec<<endl;
 			total_demand_req[(*record[next_table])[i].line1]++;	
 		} 
 	}
 	// cout<<"start table"<<endl;
-	for (int i = record[current_table]->size(); i >= 0; i--) {
+	for (int i = record[current_table]->size()-1; i >= 0; i--) {
 
 
 		if (!((*record[current_table])[i].is_evict)) {
