@@ -292,10 +292,12 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 
 
     //@Sumon: interactions, window approach
+    uint64_t pos = cache->pos_C_evicts_P + cache->pos_P_evicts_C + cache->pos_P_evicts_P;
+    uint64_t neg = cache->neg_C_evicts_P + cache->neg_P_evicts_P + cache->neg_P_evicts_C;
+    uint64_t ntrl = cache->ntrl_C_evicts_P + cache->ntrl_P_evicts_C + cache->ntrl_P_evicts_P;
+    uint64_t total = pos + neg + ntrl;
     cout<<"Revised Interactions: positive negative neutral"<<endl;
-    cout<<cache->NAME<<"_interactions "<< cache->pos_C_evicts_P + cache->pos_P_evicts_C + cache->pos_P_evicts_P <<" "
-                                    << cache->neg_C_evicts_P + cache->neg_P_evicts_P + cache->neg_P_evicts_C <<" "
-                                    << cache->ntrl_C_evicts_P + cache->ntrl_P_evicts_C + cache->ntrl_P_evicts_P<<endl;
+    cout<<cache->NAME<<"_interactions "<<pos<<" "<<neg<<" "<<ntrl<<" "<<((double)pos/total)*100.0<<" "<<((double)neg/total)*100.0<<" "<<((double)ntrl/total)*100.0<<endl; 
     
 
 	//Neelu: addition ideal spatial region stats

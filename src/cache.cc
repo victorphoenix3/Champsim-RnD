@@ -568,9 +568,9 @@ void CACHE::handle_fill()
 			// 	}
 			// }
 
-// cache_type == IS_L2C || cache_type == IS_L1D ||
+//  cache_type == IS_L1D ||
 			//@Sumon: Interaction, adding eviction entries to eviction table
-			if( cache_type == IS_LLC)
+			if(cache_type == IS_L2C || cache_type == IS_LLC)
 			{
 				// cout<<"hello"<<endl;
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
@@ -1521,8 +1521,8 @@ void CACHE::handle_read()
 			int way = check_hit(&RQ.entry[index]);
 
 			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/
-			// cache_type == IS_L2C || cache_type == IS_L1D ||
-			if(cache_type == IS_LLC)
+			//  cache_type == IS_L1D ||
+			if(cache_type == IS_L2C || cache_type == IS_LLC)
 			{
 				uint64_t line_addr;
 				// if (cache_type == IS_L1I || cache_type == IS_L1D)
@@ -4080,9 +4080,9 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int pf_fill_l
 
 //@jayati: parse table containing cache access records to quantify cache-prefetcher interactions
 void CACHE::collect_interaction_stats() {
-	// cout<<"epoch: "<<epoch_size/2<<endl;
-	// cout<<"next table: "<<record[next_table]->size()<<endl;
-	// cout<<"cur table: "<<record[current_table]->size()<<endl;
+	cout<<"epoch: "<<epoch_size/2<<endl;
+	cout<<"next table: "<<record[next_table]->size()<<endl;
+	cout<<"cur table: "<<record[current_table]->size()<<endl;
 
 	// cout<<"start of interaction stat collection\n---------------------------------------------------------------------"<<endl;
 	
@@ -4095,7 +4095,6 @@ void CACHE::collect_interaction_stats() {
 	}
 	// cout<<"start table"<<endl;
 	for (int i = record[current_table]->size()-1; i >= 0; i--) {
-
 
 		if (!((*record[current_table])[i].is_evict)) {
 			// cout << (*record[current_table])[i].is_evict<<" " << hex << (*record[current_table])[i].line1<<" "<< (*record[current_table])[i].type1<<" "<< hex << (*record[current_table])[i].line2<<" "<< (*record[current_table])[i].type2<<dec<<endl;
@@ -4111,8 +4110,18 @@ void CACHE::collect_interaction_stats() {
 
 		if (total_demand_req[(*record[current_table])[i].line1] == total_demand_req[(*record[current_table])[i].line2]) {
 			if ((*record[current_table])[i].type1) {
-				if ((*record[current_table])[i].type2) ntrl_P_evicts_P++;
-				else ntrl_P_evicts_C++;
+				if ((*record[current_table])[i].type2) {
+					if(total_demand_req[(*record[current_table])[i].line1] == 0)
+						neg_P_evicts_P++;	//treat useless prefetches as neg
+					else
+						ntrl_P_evicts_P++;
+				}
+				else {
+					if(total_demand_req[(*record[current_table])[i].line1] == 0)
+						neg_P_evicts_C++;	//treat useless prefetches as neg
+					else
+						ntrl_P_evicts_C++;
+				}
 			} else {
 				if ((*record[current_table])[i].type2) ntrl_C_evicts_P++;
 				else ntrl_C_evicts_C++;
@@ -4139,7 +4148,7 @@ void CACHE::collect_interaction_stats() {
 	total_demand_req.clear();
 
 	// cout<<"---------------------------------------------------------------------\nend"<<endl;
-	cout.flush();
+	// cout.flush();
 }
 
 int CACHE::add_pq(PACKET *packet)
