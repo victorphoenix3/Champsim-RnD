@@ -205,7 +205,9 @@ class CACHE : public MEMORY {
                 ntrl_P_evicts_C,
                 ntrl_P_evicts_P,
                 ntrl_C_evicts_P,
-                ntrl_C_evicts_C;
+                ntrl_C_evicts_C,
+                useless_P_evicts_useless_P,
+                useless_P_evicts_dead_C;
 
         vector<vector<tableEntry>*> record;
         vector<tableEntry> recordA, recordB;
@@ -361,7 +363,7 @@ class CACHE : public MEMORY {
     inaccP_evicts_inaccP = 0;
 
     //@jayati
-    epoch_size = 2000;
+    epoch_size = 1000;
     current_table = 0;
     next_table = 1;
     fill_table = 0;
@@ -385,6 +387,8 @@ class CACHE : public MEMORY {
     ntrl_P_evicts_P = 0;
     ntrl_C_evicts_P = 0;
     ntrl_C_evicts_C = 0;
+    useless_P_evicts_useless_P = 0;
+    useless_P_evicts_dead_C = 0;
 
 	//Addition by Neelu end
 

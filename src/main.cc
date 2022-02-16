@@ -293,12 +293,15 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 
     //@Sumon: interactions, window approach
     uint64_t pos = cache->pos_C_evicts_P + cache->pos_P_evicts_C + cache->pos_P_evicts_P;
-    uint64_t neg = cache->neg_C_evicts_P + cache->neg_P_evicts_P + cache->neg_P_evicts_C;
+    uint64_t neg = cache->neg_C_evicts_P + cache->neg_P_evicts_P + cache->neg_P_evicts_C + cache->useless_P_evicts_dead_C + cache->useless_P_evicts_useless_P;
     uint64_t ntrl = cache->ntrl_C_evicts_P + cache->ntrl_P_evicts_C + cache->ntrl_P_evicts_P;
     uint64_t total = pos + neg + ntrl;
     cout<<"Revised Interactions: positive negative neutral"<<endl;
     cout<<cache->NAME<<"_interactions "<<pos<<" "<<neg<<" "<<ntrl<<" "<<((double)pos/total)*100.0<<" "<<((double)neg/total)*100.0<<" "<<((double)ntrl/total)*100.0<<endl; 
     
+    cout<<cache->NAME<<"_positive "<<(100.0/pos) * cache->pos_C_evicts_P <<" "<<(100.0/pos) * cache->pos_P_evicts_C <<" "<<(100.0/pos) * cache->pos_P_evicts_P<<endl;
+    cout<<cache->NAME<<"_negative "<<(100.0/neg) * cache->neg_C_evicts_P <<" "<<(100.0/neg) * cache->neg_P_evicts_P <<" "<<(100.0/neg) * cache->neg_P_evicts_C<<" "<<(100.0/neg) * cache->useless_P_evicts_dead_C<<" "<<(100.0/neg) * cache->useless_P_evicts_useless_P<<endl;
+    cout<<cache->NAME<<"_neutral "<<(100.0/ntrl) * cache->ntrl_C_evicts_P <<" "<<(100.0/ntrl) * cache->ntrl_P_evicts_C <<" "<<(100.0/ntrl) * cache->ntrl_P_evicts_P <<endl;   
 
 	//Neelu: addition ideal spatial region stats
 	if(cache->cache_type == IS_L1D)
@@ -604,6 +607,8 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
     cache->pos_C_evicts_P = 0;
     cache->pos_P_evicts_C = 0;
     cache->pos_P_evicts_P = 0;
+    cache->useless_P_evicts_useless_P = 0;
+    cache->useless_P_evicts_dead_C = 0;
 
     cache->recordA.clear();
     cache->recordB.clear();

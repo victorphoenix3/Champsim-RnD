@@ -570,7 +570,8 @@ void CACHE::handle_fill()
 
 //  cache_type == IS_L1D ||
 			//@Sumon: Interaction, adding eviction entries to eviction table
-			if(cache_type == IS_L2C || cache_type == IS_LLC)
+			// || cache_type == IS_L2C || cache_type == IS_LLC
+			if(cache_type == IS_L1D )
 			{
 				// cout<<"hello"<<endl;
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
@@ -1521,16 +1522,16 @@ void CACHE::handle_read()
 			int way = check_hit(&RQ.entry[index]);
 
 			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/
-			//  cache_type == IS_L1D ||
-			if(cache_type == IS_L2C || cache_type == IS_LLC)
+			//  cache_type == IS_L1D |||| cache_type == IS_L2C || cache_type == IS_LLC
+			if(cache_type == IS_L1D )
 			{
 				uint64_t line_addr;
-				// if (cache_type == IS_L1I || cache_type == IS_L1D)
-				// {
-				// 	assert(RQ.entry[index].full_physical_address != 0);
-				// 	line_addr = RQ.entry[index].full_physical_address >> LOG2_BLOCK_SIZE;
-				// }
-				// else
+				if (cache_type == IS_L1I || cache_type == IS_L1D)
+				{
+					assert(RQ.entry[index].full_physical_address != 0);
+					line_addr = RQ.entry[index].full_physical_address >> LOG2_BLOCK_SIZE;
+				}
+				else
 					line_addr = RQ.entry[index].address;
 
 				(*record[fill_table]).push_back({0, line_addr, 0, 0, 0});
@@ -4080,9 +4081,9 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int pf_fill_l
 
 //@jayati: parse table containing cache access records to quantify cache-prefetcher interactions
 void CACHE::collect_interaction_stats() {
-	cout<<"epoch: "<<epoch_size/2<<endl;
-	cout<<"next table: "<<record[next_table]->size()<<endl;
-	cout<<"cur table: "<<record[current_table]->size()<<endl;
+	// cout<<"epoch: "<<epoch_size/2<<endl;
+	// cout<<"next table: "<<record[next_table]->size()<<endl;
+	// cout<<"cur table: "<<record[current_table]->size()<<endl;
 
 	// cout<<"start of interaction stat collection\n---------------------------------------------------------------------"<<endl;
 	
@@ -4112,13 +4113,13 @@ void CACHE::collect_interaction_stats() {
 			if ((*record[current_table])[i].type1) {
 				if ((*record[current_table])[i].type2) {
 					if(total_demand_req[(*record[current_table])[i].line1] == 0)
-						neg_P_evicts_P++;	//treat useless prefetches as neg
+						useless_P_evicts_useless_P++;	//treat useless prefetches as neg
 					else
 						ntrl_P_evicts_P++;
 				}
 				else {
 					if(total_demand_req[(*record[current_table])[i].line1] == 0)
-						neg_P_evicts_C++;	//treat useless prefetches as neg
+						useless_P_evicts_dead_C++;	//treat useless prefetches as neg
 					else
 						ntrl_P_evicts_C++;
 				}

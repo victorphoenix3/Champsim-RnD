@@ -1,0 +1,1 @@
+grep "${2} TOTAL     ACCESS" $1/*core.txt | sed -e 's/.champsimtrace.xz[^ ]*//g' |awk '{print $1","$16}' |rev | cut -d "/" -f 1 | rev| sed -e '1s/^/Benchmarks,MPKI\n/'

@@ -14,5 +14,5 @@ TRACES=$(ls ${TRACE_DIR})
 
 for file in ${TRACES}
 do
-  ./run_champsim.sh ${BUILD} ${WARM} ${SIM} ${TRACE_DIR} ${file} ${OUT_DIR} &
+  taskset -c 4-15 ./run_champsim.sh ${BUILD} ${WARM} ${SIM} ${TRACE_DIR} ${file} ${OUT_DIR} &
 done

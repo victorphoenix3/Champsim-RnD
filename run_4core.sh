@@ -6,7 +6,7 @@ if [ "$#" -lt 8 ] || [ "$#" -gt 9 ]; then
     exit 1
 fi
 
-TRACE_DIR=$PWD/../	
+TRACE_DIR=$PWD/../../biswa/SPEC2017Traces	
 #SPEC2017
 BINARY=${1}
 N_WARM=${2}
