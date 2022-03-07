@@ -166,6 +166,8 @@ void CACHE::handle_fill()
 			{
 				uint64_t current_miss_latency = (current_core_cycle[fill_cpu] - MSHR.entry[mshr_index].cycle_enqueued);
 				total_miss_latency += current_miss_latency;
+				//@Sumon: miss latency by type
+				miss_latency[MSHR.entry[mshr_index].type] += current_miss_latency;
 			}
 
 			MSHR.remove_queue(&MSHR.entry[mshr_index]);
@@ -571,7 +573,7 @@ void CACHE::handle_fill()
 //  cache_type == IS_L1D ||
 			//@Sumon: Interaction, adding eviction entries to eviction table
 			// || cache_type == IS_L2C || cache_type == IS_LLC
-			if(cache_type == IS_L1D )
+			if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
 			{
 				// cout<<"hello"<<endl;
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
@@ -766,6 +768,8 @@ void CACHE::handle_fill()
 			{
 				uint64_t current_miss_latency = (current_core_cycle[fill_cpu] - MSHR.entry[mshr_index].cycle_enqueued);
 				total_miss_latency += current_miss_latency;
+				//@Sumon: miss latency by type
+				miss_latency[MSHR.entry[mshr_index].type] += current_miss_latency;
 			}
 
 			MSHR.remove_queue(&MSHR.entry[mshr_index]);
@@ -1523,7 +1527,7 @@ void CACHE::handle_read()
 
 			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/
 			//  cache_type == IS_L1D |||| cache_type == IS_L2C || cache_type == IS_LLC
-			if(cache_type == IS_L1D )
+			if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
 			{
 				uint64_t line_addr;
 				if (cache_type == IS_L1I || cache_type == IS_L1D)
