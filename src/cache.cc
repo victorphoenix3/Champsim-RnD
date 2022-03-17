@@ -1625,7 +1625,13 @@ void CACHE::handle_read()
 				}
 			}
 #endif
-
+			//@Sumon: average MSHR occupancy
+			if(warmup_complete[read_cpu])
+			{
+				sum_of_mshr_occupancy += MSHR.occupancy;
+				mshr_occupancy_samples++;				
+			}
+			
 			if (way >= 0)
 			{ // read hit
 
@@ -4085,9 +4091,7 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int pf_fill_l
 
 //@jayati: parse table containing cache access records to quantify cache-prefetcher interactions
 void CACHE::collect_interaction_stats() {
-	// cout<<"epoch: "<<epoch_size/2<<endl;
-	// cout<<"next table: "<<record[next_table]->size()<<endl;
-	// cout<<"cur table: "<<record[current_table]->size()<<endl;
+	// cout<<NAME<<" evictions: "<<epoch_size/2<<" accesses: "<<record[next_table]->size() + record[current_table]->size() - (epoch_size/2)<<endl;
 
 	// cout<<"start of interaction stat collection\n---------------------------------------------------------------------"<<endl;
 	

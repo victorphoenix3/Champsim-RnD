@@ -262,14 +262,17 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 	{
 			cout << cache->NAME;
 			cout << " AVERAGE MISS LATENCY: " << (1.0*(cache->total_miss_latency))/TOTAL_MISS << " cycles" << endl;
-            cout << cache->NAME<< " AVERAGE MISS LATENCY LOAD+PREFETCH: " << (1.0*(cache->miss_latency[LOAD] + cache->miss_latency[PREFETCH]))/(cache->roi_miss[cpu][LOAD]+cache->roi_miss[cpu][PREFETCH]) << " cycles\n" << endl;
-            cout << cache->NAME<< " AVERAGE MISS LATENCY LOAD: " << (1.0*(cache->miss_latency[LOAD]))/cache->roi_miss[cpu][LOAD] << " cycles" << endl;
+            cout << cache->NAME<< " AVERAGE MISS LATENCY LOAD+PREFETCH: " << (1.0*(cache->miss_latency[LOAD] + cache->miss_latency[PREFETCH]))/(cache->roi_miss[cpu][LOAD]+cache->roi_miss[cpu][PREFETCH]) << " cycles" << endl;
+            cout << cache->NAME<< " AVERAGE MISS LATENCY LOAD: " << (1.0*(cache->miss_latency[LOAD]))/cache->roi_miss[cpu][LOAD] << " cycles\n" << endl;
             // cout << "AVERAGE MISS LATENCY RFO: " << (1.0*(cache->miss_latency[RFO]))/cache->roi_miss[cpu][RFO] << " cycles" << endl;
             // cout << "AVERAGE MISS LATENCY PREFETCH: " << (1.0*(cache->miss_latency[PREFETCH]))/cache->roi_miss[cpu][PREFETCH] << " cycles" << endl;
             // cout << "AVERAGE MISS LATENCY WRITEBACK: " << (1.0*(cache->miss_latency[WRITEBACK]))/cache->roi_miss[cpu][WRITEBACK] << " cycles" << endl;
             // cout << "AVERAGE MISS LATENCY LOAD_TRANSLATION: " << (1.0*(cache->miss_latency[LOAD_TRANSLATION]))/cache->roi_miss[cpu][LOAD_TRANSLATION] << " cycles" << endl;
             // cout << "AVERAGE MISS LATENCY PREFETCH_TRANSLATION: " << (1.0*(cache->miss_latency[PREFETCH_TRANSLATION]))/cache->roi_miss[cpu][PREFETCH_TRANSLATION] << " cycles" << endl;
             // cout << "AVERAGE MISS LATENCY TRANSLATION_FROM_L1D: " << (1.0*(cache->miss_latency[TRANSLATION_FROM_L1D]))/cache->roi_miss[cpu][TRANSLATION_FROM_L1D] << " cycles" << endl << endl;
+
+            cout << cache->NAME<< " AVERAGE MSHR OCCUPANCY: " << (1.0*cache->sum_of_mshr_occupancy)/cache->mshr_occupancy_samples <<endl << endl;
+
 	}
 
     //@Vishal: Will work only for 1 core, for multi-core this will give sim_result not roi_result
@@ -565,7 +568,6 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
     cache->transl_evicting_transl = 0;
 
     //@sumon
-        //@sumon
     for(int i = 0; i < 15; i++)
     {
         cache->pf_early_bin[i] = 0;
@@ -633,6 +635,11 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
     cache->PQ.TO_CACHE = 0;
     cache->PQ.FORWARD = 0;
     cache->PQ.FULL = 0;
+
+    //@Sumon: for avg mshr occupancy
+    cache->sum_of_mshr_occupancy = 0;
+    cache->mshr_occupancy_samples = 0;
+
 }
 
 void finish_warmup()

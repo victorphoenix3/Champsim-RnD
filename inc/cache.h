@@ -190,6 +190,9 @@ class CACHE : public MEMORY {
              inaccP_evicts_P,
              inaccP_evicts_inaccP;
 
+        //@Sumon: for avg MSHR occupancy
+        uint64_t sum_of_mshr_occupancy, mshr_occupancy_samples;
+
         //@jayati - for quantifying cache-prefetcher interactions
         uint64_t epoch_size;
         uint8_t current_table, next_table, fill_table;
@@ -365,8 +368,17 @@ class CACHE : public MEMORY {
     inaccP_evicts_P = 0;
     inaccP_evicts_inaccP = 0;
 
+    //@Sumon: for avg mshr occupancy
+    sum_of_mshr_occupancy = 0;
+    mshr_occupancy_samples = 0;
+
     //@jayati
-    epoch_size = 1000;
+    if(!NAME.compare("L1D"))
+        epoch_size = 1000;
+    else if(!NAME.compare("L2C"))
+        epoch_size = 4000;
+    else   
+        epoch_size = 4000;
     current_table = 0;
     next_table = 1;
     fill_table = 0;
