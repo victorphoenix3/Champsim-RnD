@@ -818,6 +818,10 @@ void CACHE::handle_writeback()
 		uint32_t set = get_set(WQ.entry[index].address);
 		int way = check_hit(&WQ.entry[index]);
 
+		//@Jayati: ideal L1D
+		if(cache_type == IS_L1D)
+			way = 0;
+
 		//Neelu: For Ideal Critical IP Prefetcher
 		/*if(cache_type == IS_L1D)
 	{
@@ -1524,6 +1528,10 @@ void CACHE::handle_read()
 			// access cache
 			uint32_t set = get_set(RQ.entry[index].address);
 			int way = check_hit(&RQ.entry[index]);
+
+			//@Jayati: ideal L1D
+			if(cache_type == IS_L1D)
+				way = 0;
 
 			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/
 			//  cache_type == IS_L1D |||| cache_type == IS_L2C || cache_type == IS_LLC
