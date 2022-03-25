@@ -169,14 +169,17 @@ class CACHE : public MEMORY {
              pref_late[NUM_CPUS][6];
 	     //Addition by Neelu end
 
-        //@sumon
+        //@Sumon: support for lateness analysis
         uint64_t pf_early_bin[15];
         uint64_t pf_late_bin[15];
         uint64_t pf_by_class_early[6][15];
         uint64_t pf_by_class_late[6][15];
+
+        //@Sumon: support for predictor based interaction
         uint16_t dead_block_counter, inacc_pf_counter;
         uint64_t dead_count, inacc_count, non_dead_count, acc_count;
 
+        //@Sumon: support for microarchitecture interactions
         uint64_t deadC_evicts_inaccP,
              deadC_evicts_P,
              C_evicts_inaccP,
@@ -190,7 +193,7 @@ class CACHE : public MEMORY {
              inaccP_evicts_P,
              inaccP_evicts_inaccP;
 
-        //@Sumon: for avg MSHR occupancy
+        //@Sumon: support for avg MSHR occupancy
         uint64_t sum_of_mshr_occupancy, mshr_occupancy_samples;
 
         //@jayati - for quantifying cache-prefetcher interactions

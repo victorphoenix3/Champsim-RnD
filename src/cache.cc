@@ -165,8 +165,10 @@ void CACHE::handle_fill()
 			if (warmup_complete[fill_cpu])
 			{
 				uint64_t current_miss_latency = (current_core_cycle[fill_cpu] - MSHR.entry[mshr_index].cycle_enqueued);
+				// if(cache_type == IS_L1D && MSHR.entry[mshr_index].type == LOAD)
+				// 	cout<<"cpu cycle: "<<current_core_cycle[fill_cpu] <<"cycle enqueued: "<< MSHR.entry[mshr_index].cycle_enqueued<<endl;
 				total_miss_latency += current_miss_latency;
-				//@Sumon: miss latency by type
+				//@Sumon: average miss latency by type of request(LOAD, PREFETCH, ...)
 				miss_latency[MSHR.entry[mshr_index].type] += current_miss_latency;
 			}
 
@@ -536,7 +538,7 @@ void CACHE::handle_fill()
 #ifdef PUSH_DTLB_PB
 			if ((cache_type != IS_DTLB) || (cache_type == IS_DTLB && MSHR.entry[mshr_index].type != PREFETCH_TRANSLATION))
 #endif
-			//@Sumon: Ineraction using predictors
+			//@Sumon: Microarchitecture ineraction using predictors
 			// if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
 			// {
 			// 	// quantifying cache-prefetcher interactions
@@ -570,15 +572,11 @@ void CACHE::handle_fill()
 			// 	}
 			// }
 
-//  cache_type == IS_L1D ||
-			//@Sumon: Interaction, adding eviction entries to eviction table
-			// || cache_type == IS_L2C || cache_type == IS_LLC
+			//@Sumon: support for microarchitecture interactions, adding eviction entries to eviction table
 			if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
 			{
-				// cout<<"hello"<<endl;
 				bool MSHR_prefetch = (MSHR.entry[mshr_index].type == PREFETCH || MSHR.entry[mshr_index].type == PREFETCH_TRANSLATION || MSHR.entry[mshr_index].type == TRANSLATION_FROM_L1D)?1:0;
 				if(block[set][way].valid) {
-						// cout<<"test: "<<total_evictions<<" "<<epoch_size/2<<" "<<fill_table<<" "<<current_table<<" "<<next_table<<endl;
 					if (total_evictions < epoch_size/2) {
 						(*record[fill_table]).push_back({1, MSHR.entry[mshr_index].address, MSHR_prefetch, block[set][way].tag,block[set][way].prefetch == 1});
 						total_evictions++;
@@ -767,8 +765,10 @@ void CACHE::handle_fill()
 			if (warmup_complete[fill_cpu])
 			{
 				uint64_t current_miss_latency = (current_core_cycle[fill_cpu] - MSHR.entry[mshr_index].cycle_enqueued);
+				if(cache_type == IS_L1D && MSHR.entry[mshr_index].type == LOAD)
+					cout<<"IP: "<<MSHR.entry[mshr_index].ip<<" cpu cycle: "<<current_core_cycle[fill_cpu] <<" cycle enqueued: "<< MSHR.entry[mshr_index].cycle_enqueued<<endl;
 				total_miss_latency += current_miss_latency;
-				//@Sumon: miss latency by type
+				//@Sumon: average miss latency by type of request(LOAD, PREFETCH, ...)
 				miss_latency[MSHR.entry[mshr_index].type] += current_miss_latency;
 			}
 
@@ -818,9 +818,9 @@ void CACHE::handle_writeback()
 		uint32_t set = get_set(WQ.entry[index].address);
 		int way = check_hit(&WQ.entry[index]);
 
-		//@Jayati: ideal L1D
-		if(cache_type == IS_L1D)
-			way = 0;
+		//@Jayati: uncomment for ideal L1D
+		// if(cache_type == IS_L1D)
+		// 	way = 0;
 
 		//Neelu: For Ideal Critical IP Prefetcher
 		/*if(cache_type == IS_L1D)
@@ -1529,12 +1529,11 @@ void CACHE::handle_read()
 			uint32_t set = get_set(RQ.entry[index].address);
 			int way = check_hit(&RQ.entry[index]);
 
-			//@Jayati: ideal L1D
-			if(cache_type == IS_L1D)
-				way = 0;
+			//@Jayati: uncomment for ideal L1D
+			// if(cache_type == IS_L1D)
+			// 	way = 0;
 
-			//@Sumon: interaction. inserting cache accesses in the interaction table both miss/
-			//  cache_type == IS_L1D |||| cache_type == IS_L2C || cache_type == IS_LLC
+			//@Sumon: support for microarchitecture interactions. Inserting cache accesses in the interaction table
 			if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
 			{
 				uint64_t line_addr;
@@ -1633,12 +1632,25 @@ void CACHE::handle_read()
 				}
 			}
 #endif
-			//@Sumon: average MSHR occupancy
+			//@Sumon: average MSHR occupancy (only LOAD)
+			// if(warmup_complete[read_cpu])
+			// {
+			// 	int temp = 0;
+			// 	for(int i = 0; i < MSHR.occupancy; i++) 
+			// 		if(MSHR.entry[i].type == LOAD)
+			// 			temp++;
+			// 	sum_of_mshr_occupancy += temp;
+			// 	mshr_occupancy_samples++;				
+			// }
+
+			//@Sumon: average MSHR occupancy (all types)
 			if(warmup_complete[read_cpu])
 			{
 				sum_of_mshr_occupancy += MSHR.occupancy;
 				mshr_occupancy_samples++;				
 			}
+
+			
 			
 			if (way >= 0)
 			{ // read hit
@@ -1938,7 +1950,7 @@ void CACHE::handle_read()
 
 					block[set][way].prefetch = 0;
 					
-					//@sumon
+					//@Sumon:Support for lateness analysis 
 					int cycles = current_core_cycle[read_cpu] - block[set][way].pf_fill_time;
 					if(cycles < 100)
 						pf_early_bin[0]++;
@@ -2396,9 +2408,8 @@ void CACHE::handle_read()
 								++pf_late; //@v Late prefetch-> on-demand requests hit in MSHR
 							}
 							
-							//@sumon: for eliminate late prefetches, do not convert to demand miss
-							if(cache_type != IS_L1D)
-								MSHR.entry[mshr_index] = RQ.entry[index];
+							// if(cache_type != IS_L1D)		//@Sumon: uncomment for eliminating late prefetches(support), explanation: do not convert to demand miss for L1D
+							MSHR.entry[mshr_index] = RQ.entry[index];
 
 							if (prior_fill_l1i && MSHR.entry[mshr_index].fill_l1i == 0)
 								MSHR.entry[mshr_index].fill_l1i = 1;
@@ -2443,17 +2454,17 @@ void CACHE::handle_read()
 
 							if(cache_type == IS_L1D || cache_type == IS_L2C)
 							{
-								//@sumon: storing time of demand miss
+								//@sumon: support for lateness analysis: storing time of demand miss
 								MSHR.entry[mshr_index].late_pref = 1;
 								MSHR.entry[mshr_index].demand_miss_time = current_core_cycle[read_cpu];
 								
-								//@sumon: eliminate late prefetches
-								if ((cache_type == IS_L1D) && (RQ.entry[index].type != PREFETCH)) {
-                    				if (PROCESSED.occupancy < PROCESSED.SIZE) {
-		                        		pf_late_test++;
-										PROCESSED.add_queue(&RQ.entry[index]);
-									}
-	                			}
+								//@sumon: uncomment for eliminating late prefetches
+								// if ((cache_type == IS_L1D) && (RQ.entry[index].type != PREFETCH)) {
+                    			// 	if (PROCESSED.occupancy < PROCESSED.SIZE) {
+		                        // 		pf_late_test++;
+								// 		PROCESSED.add_queue(&RQ.entry[index]);
+								// 	}
+	                			// }
 							}
 
 							//Neelu: set the late bit
@@ -3267,7 +3278,7 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 
 	if (block[set][way].prefetch)
 	{
-		//@Sumon
+		//@Sumon: support for lateness analysis
 		block[set][way].pf_fill_time = current_core_cycle[packet->cpu];		
 		pf_fill++;
 
@@ -4097,7 +4108,7 @@ int CACHE::kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int pf_fill_l
 	return 0;
 }
 
-//@jayati: parse table containing cache access records to quantify cache-prefetcher interactions
+//@jayati: support for microarchitecture interactions. Parse table containing cache access records to quantify cache-prefetcher interactions
 void CACHE::collect_interaction_stats() {
 	// cout<<NAME<<" evictions: "<<epoch_size/2<<" accesses: "<<record[next_table]->size() + record[current_table]->size() - (epoch_size/2)<<endl;
 
@@ -4406,6 +4417,11 @@ int CACHE::add_pq(PACKET *packet)
 	PQ.entry[index] = *packet;
 	PQ.entry[index].cycle_enqueued = current_core_cycle[cpu];
 
+	//@Sumon: test
+	// if(cache_type == IS_L1D && packet->type == LOAD){
+	// 	cout<<"IP: "<<packet->ip<<"  cycle enqueued: "<<current_core_cycle[packet->cpu]<<endl;
+	// }
+
 	//@Vasudha - if any TLB calls add_pq
 	if (knob_cloudsuite && (cache_type == IS_ITLB || cache_type == IS_DTLB || cache_type == IS_STLB))
 	{
@@ -4664,6 +4680,10 @@ void CACHE::add_nonfifo_queue(PACKET_QUEUE *queue, PACKET *packet)
 
 	packet->cycle_enqueued = current_core_cycle[packet->cpu];
 
+	//@Sumon: test
+	if(cache_type == IS_L1D && packet->type == LOAD && warmup_complete[packet->cpu]){
+		cout<<"IP: "<<packet->ip<<"  cycle enqueued: "<<current_core_cycle[packet->cpu]<<endl;
+	}
 	// search queue
 	for (index = 0; index < queue->SIZE; index++)
 	{

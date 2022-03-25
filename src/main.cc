@@ -262,6 +262,8 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 	{
 			cout << cache->NAME;
 			cout << " AVERAGE MISS LATENCY: " << (1.0*(cache->total_miss_latency))/TOTAL_MISS << " cycles" << endl;
+
+            //@Sumon: Average miss latency for each type of access
             cout << cache->NAME<< " AVERAGE MISS LATENCY LOAD+PREFETCH: " << (1.0*(cache->miss_latency[LOAD] + cache->miss_latency[PREFETCH]))/(cache->roi_miss[cpu][LOAD]+cache->roi_miss[cpu][PREFETCH]) << " cycles" << endl;
             cout << cache->NAME<< " AVERAGE MISS LATENCY LOAD: " << (1.0*(cache->miss_latency[LOAD]))/cache->roi_miss[cpu][LOAD] << " cycles\n" << endl;
             // cout << "AVERAGE MISS LATENCY RFO: " << (1.0*(cache->miss_latency[RFO]))/cache->roi_miss[cpu][RFO] << " cycles" << endl;
@@ -271,7 +273,8 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
             // cout << "AVERAGE MISS LATENCY PREFETCH_TRANSLATION: " << (1.0*(cache->miss_latency[PREFETCH_TRANSLATION]))/cache->roi_miss[cpu][PREFETCH_TRANSLATION] << " cycles" << endl;
             // cout << "AVERAGE MISS LATENCY TRANSLATION_FROM_L1D: " << (1.0*(cache->miss_latency[TRANSLATION_FROM_L1D]))/cache->roi_miss[cpu][TRANSLATION_FROM_L1D] << " cycles" << endl << endl;
 
-            cout << cache->NAME<< " AVERAGE MSHR OCCUPANCY: " << (1.0*cache->sum_of_mshr_occupancy)/cache->mshr_occupancy_samples <<endl << endl;
+            //@Sumon: Average MSHR occupancy
+            cout << cache->NAME<< " AVERAGE MSHR OCCUPANCY(LOADS ONLY): " << (1.0*cache->sum_of_mshr_occupancy)/cache->mshr_occupancy_samples <<endl << endl;
 
 	}
 
@@ -369,6 +372,7 @@ void print_roi_stats(uint32_t cpu, CACHE *cache)
 
 }
 
+//@Sumon: lateness stats for IPCP(can be used for other prefetchers with some limitations)
 void print_prefetch_stats(uint32_t cpu, CACHE *cache)
 {
 
@@ -2012,10 +2016,11 @@ int main(int argc, char** argv)
     print_branch_stats();
 #endif
 
-    for (uint32_t i=0; i<NUM_CPUS; i++) {
-        print_prefetch_stats(i, &ooo_cpu[i].L1D);
-        print_prefetch_stats(i, &ooo_cpu[i].L2C);
-    }
+    //@Sumon: print lateness stats
+    // for (uint32_t i=0; i<NUM_CPUS; i++) { 
+    //     print_prefetch_stats(i, &ooo_cpu[i].L1D);
+    //     print_prefetch_stats(i, &ooo_cpu[i].L2C);
+    // }
 
     cout<<"DRAM PAGES: "<<DRAM_PAGES<<endl;
     cout<<"Allocated PAGES: "<<allocated_pages<<endl;

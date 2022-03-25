@@ -102,7 +102,7 @@ class PACKET {
         confidence,
 	late_pref;
 
-    uint64_t demand_miss_time; //@sumon
+    uint64_t demand_miss_time; //@sumon: support for lateness analysis
 
     uint32_t pf_metadata;
 
