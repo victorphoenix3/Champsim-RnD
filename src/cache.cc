@@ -162,7 +162,7 @@ void CACHE::handle_fill()
 				}
 			}
 
-			if (warmup_complete[fill_cpu])
+			if (warmup_complete[fill_cpu] && (MSHR.entry[mshr_index].cycle_enqueued != 0))
 			{
 				uint64_t current_miss_latency = (current_core_cycle[fill_cpu] - MSHR.entry[mshr_index].cycle_enqueued);
 				// if(cache_type == IS_L1D && MSHR.entry[mshr_index].type == LOAD)
@@ -762,11 +762,11 @@ void CACHE::handle_fill()
 						PROCESSED.add_queue(&MSHR.entry[mshr_index]);
 			}
 
-			if (warmup_complete[fill_cpu])
+			if (warmup_complete[fill_cpu] && (MSHR.entry[mshr_index].cycle_enqueued != 0))
 			{
 				uint64_t current_miss_latency = (current_core_cycle[fill_cpu] - MSHR.entry[mshr_index].cycle_enqueued);
-				if(cache_type == IS_L1D && MSHR.entry[mshr_index].type == LOAD)
-					cout<<"IP: "<<MSHR.entry[mshr_index].ip<<" cpu cycle: "<<current_core_cycle[fill_cpu] <<" cycle enqueued: "<< MSHR.entry[mshr_index].cycle_enqueued<<endl;
+				// if(cache_type == IS_L1D && MSHR.entry[mshr_index].type == LOAD)
+				// 	cout<<"IP: "<<MSHR.entry[mshr_index].ip<<" cpu cycle: "<<current_core_cycle[fill_cpu] <<" cycle enqueued: "<< MSHR.entry[mshr_index].cycle_enqueued<<endl;
 				total_miss_latency += current_miss_latency;
 				//@Sumon: average miss latency by type of request(LOAD, PREFETCH, ...)
 				miss_latency[MSHR.entry[mshr_index].type] += current_miss_latency;
@@ -1531,7 +1531,7 @@ void CACHE::handle_read()
 
 			//@Jayati: uncomment for ideal L1D
 			// if(cache_type == IS_L1D)
-			// 	way = 0;
+				// way = 0;
 
 			//@Sumon: support for microarchitecture interactions. Inserting cache accesses in the interaction table
 			if(cache_type == IS_L1D || cache_type == IS_L2C || cache_type == IS_LLC)
@@ -1633,22 +1633,22 @@ void CACHE::handle_read()
 			}
 #endif
 			//@Sumon: average MSHR occupancy (only LOAD)
-			// if(warmup_complete[read_cpu])
-			// {
-			// 	int temp = 0;
-			// 	for(int i = 0; i < MSHR.occupancy; i++) 
-			// 		if(MSHR.entry[i].type == LOAD)
-			// 			temp++;
-			// 	sum_of_mshr_occupancy += temp;
-			// 	mshr_occupancy_samples++;				
-			// }
-
-			//@Sumon: average MSHR occupancy (all types)
 			if(warmup_complete[read_cpu])
 			{
-				sum_of_mshr_occupancy += MSHR.occupancy;
+				int temp = 0;
+				for(int i = 0; i < MSHR.occupancy; i++) 
+					if(MSHR.entry[i].type == LOAD)
+						temp++;
+				sum_of_mshr_occupancy += temp;
 				mshr_occupancy_samples++;				
 			}
+
+			//@Sumon: average MSHR occupancy (all types)
+			// if(warmup_complete[read_cpu])
+			// {
+			// 	sum_of_mshr_occupancy += MSHR.occupancy;
+			// 	mshr_occupancy_samples++;				
+			// }
 
 			
 			
@@ -4680,10 +4680,10 @@ void CACHE::add_nonfifo_queue(PACKET_QUEUE *queue, PACKET *packet)
 
 	packet->cycle_enqueued = current_core_cycle[packet->cpu];
 
-	//@Sumon: test
-	if(cache_type == IS_L1D && packet->type == LOAD && warmup_complete[packet->cpu]){
-		cout<<"IP: "<<packet->ip<<"  cycle enqueued: "<<current_core_cycle[packet->cpu]<<endl;
-	}
+	//@Sumon: test miss latency
+	// if(cache_type == IS_L1D && packet->type == LOAD && warmup_complete[packet->cpu]){
+	// 	cout<<"IP: "<<packet->ip<<"  cycle enqueued: "<<current_core_cycle[packet->cpu]<<endl;
+	// }
 	// search queue
 	for (index = 0; index < queue->SIZE; index++)
 	{
